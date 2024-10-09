@@ -17,7 +17,7 @@ function Links() {
         </div>
         <button
         className={
-          "border border-violet-500 text-violet-500 w-full mt-5 px-5 hover:bg-violet-500 hover:text-white transition duration-300 py-2 rounded-lg font-semibold flex items-center justify-center gap-1.5 text-sm"
+          "border border-violet-500 text-violet-500 w-full mt-8 px-5 hover:bg-violet-500 hover:text-white transition duration-300 py-2 rounded-lg font-semibold flex items-center justify-center gap-1.5 text-sm"
         }
       >
       +  Add new link
