@@ -6,7 +6,13 @@ import { useEffect, useState } from "react";
 import { IUserInfo } from "~/interface/user.info";
 import { IUserPlatformList } from "~/interface/platform";
 
-function MobileMockup({ isSaved }: { isSaved: boolean }) {
+function MobileMockup({
+  isSaved,
+  showMockup = true,
+}: {
+  isSaved: boolean;
+  showMockup?: boolean;
+}) {
   const [uInfo, setUInof] = useState<IUserInfo | null>(null);
   const [allLinkLists, setAllLinkList] = useState<IUserPlatformList[] | null>(
     null
@@ -27,7 +33,7 @@ function MobileMockup({ isSaved }: { isSaved: boolean }) {
 
   return (
     <>
-      <img src={mobileMoc} alt="" className="w-full h-full" />
+      {showMockup && <img src={mobileMoc} alt="" className="w-full h-full"/>}
       <div
         className="w-2/3 h-full absolute top-0 left-0 right-0 bottom-0 flex flex-col items-center justify-center"
         style={{

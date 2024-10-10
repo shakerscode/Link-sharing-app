@@ -1,9 +1,11 @@
-body {
+body #root {
   box-sizing: border-box;
   margin: 0px;
   background-color: #f3f4f6;
+  height: 100%;
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+ 
