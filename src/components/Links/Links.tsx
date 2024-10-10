@@ -3,14 +3,14 @@ import { LinkLogo } from "~/assets/icons/LinkLogo";
 import { IUserPlatformList } from "~/interface/platform";
 import { toast } from "react-hot-toast";
 import LinkBox from "../ui/LinkBox";
+import MobileMockup from "../MobileMockup/MobileMockup";
 
 function Links() {
   const [linkList, setLinkList] = useState<IUserPlatformList | null>(null);
 
   const [allLinkLists, setAllLinkList] = useState<IUserPlatformList[] | null>(
     null
-  );
-
+  ); 
   const [isUnsaved, setIsUnsaved] = useState<boolean>(false);
 
   useEffect(() => {
@@ -94,6 +94,7 @@ function Links() {
     }));
   };
 
+  //Handle remove links locally
   const handleRemove = () => {
     setLinkList(null);
     setIsUnsaved(false);
@@ -101,7 +102,9 @@ function Links() {
 
   return (
     <div className="flex items-start gap-5 py-5">
-      <div className="w-1/3 min-h-[85vh] h-full bg-white rounded-2xl p-6"></div>
+      <div className="w-1/3 min-h-[80vh] h-full flex items-center justify-center bg-white rounded-2xl p-6 relative">
+        <MobileMockup isSaved={!isUnsaved}/>
+      </div>
       <div className="w-2/3 h-full bg-white rounded-2xl p-8">
         {/* Link box header  */}
         <div className="my-3">
@@ -149,7 +152,7 @@ function Links() {
               </div>
             </>
           )}
-          {allLinkLists?.length > 0 ? (
+          {allLinkLists?.length > 0 || linkList ? (
             allLinkLists?.map((list: IUserPlatformList, i: number) => (
               <LinkBox
                 index={i}
@@ -167,16 +170,6 @@ function Links() {
             </div>
           )}
         </div>
-        {/* <div className="border-t border-gray-200 w-full mt-5 flex justify-end items-center">
-          <button
-            onClick={handleSave}
-            className={
-              "border border-violet-500 hover:text-violet-500 px-5 hover:bg-white  bg-violet-600 text-white transition duration-300 py-2 rounded-lg text-sm font-semibold mt-5"
-            }
-          >
-            Save
-          </button>
-        </div> */}
       </div>
     </div>
   );

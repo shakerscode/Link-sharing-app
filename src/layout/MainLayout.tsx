@@ -4,7 +4,7 @@ import Header from "~/components/common/Header";
 
 function MainLayout() {
   return (
-    <div className="p-4">
+    <div className="p-4 max-w-[1480px] w-full mx-auto">
       <Toaster position="bottom-center"/>
       <Header />
       <div>
