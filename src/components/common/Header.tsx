@@ -15,7 +15,7 @@ export default function Header() {
           {/* imported svg logo from icon folder  */}
           <LinkLogo size={32} />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 hidden md:block">devlinks</h2>
+        <h2 className="text-2xl font-bold text-gray-900 hide-name">devlinks</h2>
       </div>
 
       {/* menu  */}
@@ -31,7 +31,7 @@ export default function Header() {
               } px-5 md:px-3 lg:px-4 hover:bg-violet-100 hover:text-violet-500 transition-all duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5`}
             >
               {link?.icon}
-              <p className="hidden md:block">{link?.title}</p>
+              <p className="hide-name">{link?.title}</p>
             </button>
           </Link>
         ))}
@@ -46,7 +46,7 @@ export default function Header() {
         >
           <MdOutlineRemoveRedEye className="block md:hidden text-xl"/>
 
-          <p className="hidden md:block">Preview</p>
+          <p className="hide-name">Preview</p>
         </button>
       </Link>
     </div>

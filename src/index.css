@@ -15,5 +15,11 @@ body #root {
     display: none;
   }
  
-  
+}
+
+@media screen and (max-width: 750px)  {
+  .hide-name{
+    display: none;
+  }
+ 
 }
