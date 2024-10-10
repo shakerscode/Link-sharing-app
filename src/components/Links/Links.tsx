@@ -101,11 +101,15 @@ function Links() {
   };
 
   return (
-    <div className="flex items-start gap-5 py-5">
-      <div className="w-1/3 min-h-[80vh] h-full flex items-center justify-center bg-white rounded-2xl p-6 relative">
+    <div className="flex md:justify-center items-start gap-5 py-5">
+      <div className="w-1/3 flex h-full items-center justify-center bg-white rounded-2xl p-6 relative hide-in-mobile" 
+      style={{
+        height:"750px",
+        width:"30%"
+      }}>
         <MobileMockup isSaved={!isUnsaved}/>
       </div>
-      <div className="w-2/3 h-full bg-white rounded-2xl p-8">
+      <div className="lg:w-2/3 w-full h-full bg-white rounded-2xl p-8">
         {/* Link box header  */}
         <div className="my-3">
           <h2 className="text-3xl font-bold text-zinc-900">

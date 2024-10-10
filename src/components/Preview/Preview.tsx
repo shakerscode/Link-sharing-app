@@ -26,10 +26,10 @@ function Preview() {
         </div>
       </div>
       <div
-        className="w-1/3 min-h-[60vh] h-full flex items-center justify-center bg-white rounded-3xl p-6 absolute top-40 right-0 left-0"
-        style={{ left: "50%", transform: "translateX(-50%)", height:"700px", width:"30%" }}
+        className="w-[90%] lg:max-w-[26%]  h-[600px] shadow-md flex items-center justify-center bg-white rounded-3xl p-6 absolute top-40 right-0 left-0"
+        style={{ left: "50%", transform: "translateX(-50%)" }}
       >
-        <MobileMockup isSaved={false} showMockup={false}/>
+        <MobileMockup isSaved={false} showMockup={false} />
       </div>
       <div className="bg-gray-200 h-[600px]"></div>
     </div>

@@ -9,3 +9,11 @@ body #root {
 @tailwind components;
 @tailwind utilities;
  
+
+@media screen and (max-width: 1024px)  {
+  .hide-in-mobile{
+    display: none;
+  }
+ 
+  
+}

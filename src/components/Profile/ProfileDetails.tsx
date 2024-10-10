@@ -65,17 +65,17 @@ function ProfileDetails() {
 
   const handleSave = () => {
     if (validateInfo()) {
-      localStorage.setItem("uInfo", JSON.stringify(userDetails)); 
+      localStorage.setItem("uInfo", JSON.stringify(userDetails));
       setIsSaved(true);
     }
   };
 
   return (
     <div className="flex items-start gap-5 py-5">
-      <div className="w-1/3 min-h-[80vh] h-full flex items-center justify-center bg-white rounded-2xl p-6 relative">
+      <div className="hide-in-mobile w-1/3 min-h-[80vh] h-full flex items-center justify-center bg-white rounded-2xl p-6 relative">
         <MobileMockup isSaved={isSaved} />
       </div>
-      <div className="w-2/3 h-full bg-white rounded-2xl p-8">
+      <div className="w-full lg:w-2/3 h-full bg-white rounded-2xl p-8">
         {/* Profile box header  */}
         <div className="my-3">
           <h2 className="text-3xl font-bold text-zinc-900">Profile details</h2>
@@ -84,11 +84,11 @@ function ProfileDetails() {
           </p>
         </div>
 
-        <div className="mt-8 bg-gray-100 rounded-xl p-5 flex items-center justify-between">
+        <div className="mt-8 bg-gray-100 rounded-xl p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <p className="w-1/3 text-gray-400 text-sm font-medium mb-1">
             Profile picture
           </p>
-          <div className="w-2/3 flex items-center gap-6">
+          <div className="w-full lg:w-2/3 flex flex-col lg:flex-row mt-3 md:mt-0 items-center lg:gap-6">
             <div
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
@@ -119,7 +119,7 @@ function ProfileDetails() {
                 </div>
               )}
             </div>
-            <p className="w-auto  text-gray-400 text-xs font-medium mb-1">
+            <p className="w-auto text-center lg:text-start mt-3 lg:mt-0 text-gray-400 text-xs font-medium mb-1">
               Image must be below 1024x1024 px <br />
               Use PNG, JPG BMP and format
             </p>
@@ -127,7 +127,7 @@ function ProfileDetails() {
         </div>
 
         <div className="mt-8 bg-gray-100 rounded-xl p-5 flex flex-col gap-4">
-          <div className="flex items-center">
+          <div className="flex flex-col items-start lg:flex-row lg:items-center">
             <p className="w-1/3 text-gray-400 text-sm font-medium mb-1">
               First name*
             </p>
@@ -140,10 +140,10 @@ function ProfileDetails() {
               }
               required
               placeholder="Jhon Doe"
-              className="w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
+              className="w-full lg:w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
             />
           </div>
-          <div className="flex items-center">
+          <div className="flex flex-col items-start lg:flex-row lg:items-center">
             <p className="w-1/3 text-gray-400 text-sm font-medium mb-1">
               Last name*
             </p>
@@ -156,10 +156,10 @@ function ProfileDetails() {
                 }))
               }
               placeholder="Doe"
-              className="w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
+              className="w-full lg:w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
             />
           </div>
-          <div className="flex items-center">
+          <div className="flex flex-col items-start lg:flex-row lg:items-center">
             <p className="w-1/3 text-gray-400 text-sm font-medium mb-1">
               Email
             </p>
@@ -171,11 +171,11 @@ function ProfileDetails() {
                 }))
               }
               placeholder="youremail@email.com"
-              className="w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
+              className="w-full md:w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
             />
           </div>
         </div>
-        <div className="border-t border-gray-200 w-full mt-28 flex justify-end items-center">
+        <div className="border-t border-gray-200 w-full mt-5 lg:mt-28 flex justify-end items-center">
           <button
             onClick={handleSave}
             className={
