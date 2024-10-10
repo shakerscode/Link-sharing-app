@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import NotFound from "~/NotFound/NotFound";
+import Home from "~/components/Home/Home";
 import Links from "~/components/Links/Links";
 import Preview from "~/components/Preview/Preview";
 import ProfileDetails from "~/components/Profile/ProfileDetails";
@@ -11,6 +12,10 @@ export const routes = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
+        path: "/",
+        element: <Home />,
+      },
+      {
         path: "/links",
         element: <Links />,
       },
@@ -19,7 +24,7 @@ export const routes = createBrowserRouter([
         element: <ProfileDetails />,
       },
     ],
-  },
+  }, 
   {
     path: "/preview",
     element: <Preview />,

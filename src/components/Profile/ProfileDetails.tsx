@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MobileMockup from "../MobileMockup/MobileMockup";
 import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
