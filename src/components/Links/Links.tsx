@@ -10,7 +10,7 @@ function Links() {
 
   const [allLinkLists, setAllLinkList] = useState<IUserPlatformList[] | null>(
     null
-  ); 
+  );
   const [isUnsaved, setIsUnsaved] = useState<boolean>(false);
 
   useEffect(() => {
@@ -102,12 +102,8 @@ function Links() {
 
   return (
     <div className="flex md:justify-center items-start gap-5 py-5">
-      <div className="w-1/3 flex h-full items-center justify-center bg-white rounded-2xl p-6 relative hide-in-mobile" 
-      style={{
-        height:"750px",
-        width:"30%"
-      }}>
-        <MobileMockup isSaved={!isUnsaved}/>
+      <div className="w-[30%] flex h-[750px] items-center justify-center bg-white rounded-2xl p-6 relative hide-in-mobile">
+        <MobileMockup isSaved={!isUnsaved} />
       </div>
       <div className="lg:w-2/3 w-full h-full bg-white rounded-2xl p-8">
         {/* Link box header  */}

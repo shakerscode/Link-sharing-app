@@ -72,7 +72,7 @@ function ProfileDetails() {
 
   return (
     <div className="flex items-start gap-5 py-5">
-      <div className="hide-in-mobile w-1/3 min-h-[80vh] h-full flex items-center justify-center bg-white rounded-2xl p-6 relative">
+      <div className="hide-in-mobile w-[30%] flex h-[750px] items-center justify-center bg-white rounded-2xl p-6 relative">
         <MobileMockup isSaved={isSaved} />
       </div>
       <div className="w-full lg:w-2/3 h-full bg-white rounded-2xl p-8">
