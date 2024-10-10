@@ -10,13 +10,15 @@ export default function Header() {
   return (
     <div className="bg-white rounded-2xl h-16 p-4 flex justify-between items-center">
       {/* logo  */}
-      <div className="flex items-center gap-1">
+      <Link to={"/"}>
+      <div className="flex items-center gap-1 cursor-pointer">
         <div className="text-violet-600">
           {/* imported svg logo from icon folder  */}
           <LinkLogo size={32} />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 hide-name">devlinks</h2>
       </div>
+      </Link>
 
       {/* menu  */}
       <div className="flex items-center gap-1 lg:gap-2">
