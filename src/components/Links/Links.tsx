@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import LinkBox from "../ui/LinkBox";
 import MobileMockup from "../MobileMockup/MobileMockup";
 import Modal from "../ui/Modal";
-import { useLinkStore } from "~/zustand/store";
+import { useLinkStore } from "~/zustand/store/useLinkStore";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { fetcher } from "~/zustand/api";
 

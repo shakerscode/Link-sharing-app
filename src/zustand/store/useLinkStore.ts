@@ -1,13 +1,7 @@
 import { create } from "zustand";
-import { IUserPlatformList } from "~/interface/platform";
+import { LinkState } from "~/interface/links"; 
 
-interface LinkState {
-  linkList: IUserPlatformList | null;
-  allLinkLists: IUserPlatformList[];
-  setLinkList: (link: IUserPlatformList | null) => void;
-  setAllLinkLists: (links: IUserPlatformList[]) => void;
-  addLink: (link: IUserPlatformList) => void;
-}
+
 
 export const useLinkStore = create<LinkState>((set) => ({
   linkList: null,

@@ -2,17 +2,11 @@ import mobileMoc from "~/assets/images/mobile-img.png";
 import { platforms } from "~/constants/platfrom";
 import { IoMdArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IUserInfo } from "~/interface/user.info";
-import { IUserPlatformList } from "~/interface/platform";
-import toast from "react-hot-toast";
-import { useLinkStore } from "~/zustand/store";
+import { useLinkStore } from "~/zustand/store/useLinkStore";
 
-function MobileMockup({ 
-  showMockup = true,
-}: { 
-  showMockup?: boolean;
-}) {
+function MobileMockup({ showMockup = true }: { showMockup?: boolean }) {
   const [uInfo, setUInfo] = useState<IUserInfo | null>(null);
   const { allLinkLists } = useLinkStore();
 

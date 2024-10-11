@@ -41,17 +41,30 @@ export default function Header() {
       </div>
 
       {/* action btn  */}
-      <Link to={"/preview"}>
-        <button
-          className={
-            "border border-violet-500 text-violet-500 px-5 hover:bg-violet-500 hover:text-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
-          }
-        >
-          <MdOutlineRemoveRedEye className="block md:hidden text-xl" />
+      <div className="flex gap-2">
+        <Link to={"/preview"}>
+          <button
+            className={
+              "border border-violet-500 text-violet-500 px-5 hover:bg-violet-500 hover:text-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
+            }
+          >
+            <MdOutlineRemoveRedEye className="block md:hidden text-xl" />
 
-          <p className="hide-name">Preview</p>
-        </button>
-      </Link>
+            <p className="hide-name">Preview</p>
+          </button>
+        </Link>
+        <Link to={"/sign-in"}>
+          <button
+            className={
+              "border border-violet-500 text-white px-5 bg-violet-500 hover:text-violet-500 hover:bg-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
+            }
+          >
+            <MdOutlineRemoveRedEye className="block md:hidden text-xl" />
+
+            <p className="hide-name">Sign in</p>
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }

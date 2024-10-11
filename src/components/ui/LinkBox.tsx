@@ -4,7 +4,7 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import LinkIcon from "~/assets/icons/LinkIcon";
 import { platforms } from "~/constants/platfrom";
 import { IUserPlatformList } from "~/interface/platform";
-import { useLinkStore } from "~/zustand/store";
+import { useLinkStore } from "~/zustand/store/useLinkStore";
 
 interface LinkBoxProps {
   index: number;
