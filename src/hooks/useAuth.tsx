@@ -7,7 +7,7 @@ import { useQuery } from "react-query";
 
 export const useAuth = () => {
   const navigate = useNavigate();
-  const { setUserDetails, isAuthenticated, setIsAuthenticated } = useUserStore();
+  const { setAuthenticatedUserDetails, isAuthenticated, setIsAuthenticated } = useUserStore();
 
   // Use React Query to fetch the user profile from the backend
   const { data, error, isLoading } = useQuery(
@@ -22,7 +22,8 @@ export const useAuth = () => {
       }),
     {
       onSuccess: (data) => {
-        setUserDetails(data);
+
+        setAuthenticatedUserDetails(data);
         setIsAuthenticated(true);
       },
       onError: () => {

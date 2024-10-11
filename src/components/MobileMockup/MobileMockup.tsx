@@ -5,10 +5,11 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { IUserInfo } from "~/interface/user.info";
 import { useLinkStore } from "~/zustand/store/useLinkStore";
+import { useUserStore } from "~/zustand/store/useUserStore";
 
 function MobileMockup({ showMockup = true }: { showMockup?: boolean }) {
-  const [uInfo, setUInfo] = useState<IUserInfo | null>(null);
   const { allLinkLists } = useLinkStore();
+  const { authenticateUserDetails: uInfo } = useUserStore();
 
   const arr = [1, 2, 3, 4];
 

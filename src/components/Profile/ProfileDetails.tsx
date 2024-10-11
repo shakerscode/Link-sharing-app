@@ -19,6 +19,7 @@ function ProfileDetails() {
   const [userDetails, setUserDetails] = useState<IUserInfo | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
+  
 
   const handleDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
