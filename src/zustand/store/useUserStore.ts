@@ -12,4 +12,10 @@ export const useUserStore = create<UserState>((set) => ({
       ...state,
       ...details,
     })),
+  authenticateUserDetails: null,
+  isAuthenticated: false,
+  setAuthenticatedUserDetails: (userDetails) =>
+    set({ authenticateUserDetails: userDetails }),
+  setIsAuthenticated: (authStatus) => set({ isAuthenticated: authStatus }),
+  logout: () => set({ authenticateUserDetails: null, isAuthenticated: false }),
 }));

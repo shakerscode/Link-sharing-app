@@ -15,14 +15,19 @@ function Links() {
   const { linkList, allLinkLists, setLinkList, setAllLinkLists, addLink } =
     useLinkStore();
 
-  console.log(linkList);
-
   const queryClient = useQueryClient();
 
   // Use React Query to fetch the links from the backend
   const { data, error, isLoading } = useQuery(
     "links",
-    async () => fetcher("/links"),
+    async () =>
+      fetcher("/links", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }),
     {
       onSuccess: (data) => {
         setAllLinkLists(data);
@@ -85,13 +90,13 @@ function Links() {
   };
 
   // Mutation for saving a new link
-  // Mutation for saving a new link
   const mutation = useMutation(
     async (linkData: IUserPlatformList) =>
       fetcher("/save-link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(linkData),
+        credentials: "include",
       }),
     {
       onSuccess: (newLink) => {
@@ -111,18 +116,7 @@ function Links() {
     if (validateForm()) {
       mutation.mutate(linkList as IUserPlatformList);
 
-      // Retrieve previous saved items from localStorage, if any
-      // const prevItems: IUserPlatformList[] = JSON.parse(
-      //   localStorage.getItem("savedLinkLists") || "[]"
-      // );
-
-      // Save to localStorage
-      // localStorage.setItem(
-      //   "savedLinkLists",
-      //   JSON.stringify([...prevItems, newLinkList])
-      // );
-
-      setIsUnsaved(false); // Mark as saved
+      setIsUnsaved(false);
       setLinkList(null);
     }
   };

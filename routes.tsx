@@ -6,6 +6,7 @@ import Home from "~/components/Home/Home";
 import Links from "~/components/Links/Links";
 import Preview from "~/components/Preview/Preview";
 import ProfileDetails from "~/components/Profile/ProfileDetails";
+import ProtectedRoute from "~/components/common/ProtectedRoute";
 import MainLayout from "~/layout/MainLayout";
 
 export const routes = createBrowserRouter([
@@ -15,21 +16,39 @@ export const routes = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <Home />, // Home page is not protected
       },
       {
         path: "/links",
-        element: <Links />,
+        element: <ProtectedRoute />, // Wrap with ProtectedRoute
+        children: [
+          {
+            path: "/links",
+            element: <Links />,
+          },
+        ],
       },
       {
         path: "/profile",
-        element: <ProfileDetails />,
+        element: <ProtectedRoute />, // Wrap with ProtectedRoute
+        children: [
+          {
+            path: "/profile",
+            element: <ProfileDetails />,
+          },
+        ],
       },
     ],
   },
   {
     path: "/preview",
-    element: <Preview />,
+    element: <ProtectedRoute />, // Wrap with ProtectedRoute
+    children: [
+      {
+        path: "/preview",
+        element: <Preview />,
+      },
+    ],
   },
   {
     path: "/sign-in",
@@ -41,6 +60,6 @@ export const routes = createBrowserRouter([
   },
   {
     path: "*",
-    element: <NotFound />,
+    element: <NotFound />, // NotFound page is not protected
   },
 ]);
