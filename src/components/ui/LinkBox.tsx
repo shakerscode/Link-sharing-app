@@ -4,13 +4,13 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import LinkIcon from "~/assets/icons/LinkIcon";
 import { platforms } from "~/constants/platfrom";
 import { IUserPlatformList } from "~/interface/platform";
+import { useLinkStore } from "~/zustand/store";
 
 interface LinkBoxProps {
   index: number;
   list: IUserPlatformList;
   handleChange: (value: string) => void;
   handleRemove: () => void;
-  setLinkList: React.Dispatch<React.SetStateAction<IUserPlatformList | null>>;
   isSaved: boolean;
 }
 
@@ -19,13 +19,13 @@ const LinkBox: FC<LinkBoxProps> = ({
   list,
   handleChange,
   handleRemove,
-  setLinkList,
   isSaved,
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<string | undefined>(
     list?.platform_name
   );
+  const { linkList, setLinkList } = useLinkStore();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   //handler for closing dropdown when we click outside of the button
@@ -128,10 +128,10 @@ const LinkBox: FC<LinkBoxProps> = ({
                   onClick={() => {
                     setSelectedPlatform(platform.name);
                     setDropdownOpen(false);
-                    setLinkList((prev) => ({
-                      ...prev,
+                    setLinkList({
+                      ...(linkList || null),
                       platform_name: platform?.name,
-                    }));
+                    });
                   }}
                   className={`flex items-center gap-2 rounded-md p-2 cursor-pointer hover:bg-gray-200 text-gray-700 text-sm ${
                     selectedPlatform === platform.name ? "bg-gray-200" : ""
@@ -157,7 +157,7 @@ const LinkBox: FC<LinkBoxProps> = ({
             <LinkIcon size={16} />
           </div>
           <input
-           disabled={isSaved}
+            disabled={isSaved}
             onChange={(e) => handleChange(e.target.value)}
             defaultValue={list?.platform_url ? list?.platform_url : ""}
             type="text"

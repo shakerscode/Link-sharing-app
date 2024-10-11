@@ -12,9 +12,8 @@ function Home() {
         {/* menu  */}
         <div className="flex items-center gap-2 mt-3">
           {navLinks?.map((link: INav, i: number) => (
-            <Link to={link?.path}>
+            <Link key={i} to={link?.path}>
               <button
-                key={i}
                 className={
                   "bg-violet-500 hover:bg-violet-400 transition-all duration-300 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2"
                 }

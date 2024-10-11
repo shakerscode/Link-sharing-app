@@ -5,15 +5,34 @@ import { toast } from "react-hot-toast";
 import LinkBox from "../ui/LinkBox";
 import MobileMockup from "../MobileMockup/MobileMockup";
 import Modal from "../ui/Modal";
+import { useLinkStore } from "~/zustand/store";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { fetcher } from "~/zustand/api";
 
 function Links() {
-  const [linkList, setLinkList] = useState<IUserPlatformList | null>(null);
-
-  const [allLinkLists, setAllLinkList] = useState<IUserPlatformList[] | null>(
-    null
-  );
   const [isUnsaved, setIsUnsaved] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { linkList, allLinkLists, setLinkList, setAllLinkLists, addLink } =
+    useLinkStore();
+
+  console.log(linkList);
+
+  const queryClient = useQueryClient();
+
+  // Use React Query to fetch the links from the backend
+  const { data, error, isLoading } = useQuery(
+    "links",
+    async () => fetcher("/links"),
+    {
+      onSuccess: (data) => {
+        setAllLinkLists(data);
+      },
+    }
+  );
+
+  if (error) {
+    toast.error((error as Error).message);
+  }
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -22,45 +41,6 @@ function Links() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Send the new link data to the backend API
-        const response = await fetch("http://localhost:5001/api/links", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          // Successfully saved link to the database
-          toast.success("Link saved successfully!");
-
-          // Optionally, update local state or re-fetch data from the database
-          setAllLinkList(data);
-          setLinkList(null);
-          setIsUnsaved(false);
-        } else {
-          // Show an error message if the request failed
-          toast.error(data.message || "Failed to save link.");
-        }
-      } catch (error) {
-        console.error("Failed to save link:", error);
-        toast.error("Failed to save link. Please try again.");
-      }
-    };
-    fetchData();
-    const prevLists: IUserPlatformList[] = JSON.parse(
-      localStorage.getItem("savedLinkLists") || "[]"
-    );
-    if (prevLists) {
-      setAllLinkList(prevLists);
-    }
-  }, []);
 
   // handle form validation
   const validateForm = () => {
@@ -104,63 +84,54 @@ function Links() {
     }
   };
 
+  // Mutation for saving a new link
+  // Mutation for saving a new link
+  const mutation = useMutation(
+    async (linkData: IUserPlatformList) =>
+      fetcher("/save-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(linkData),
+      }),
+    {
+      onSuccess: (newLink) => {
+        // Update Zustand state and refetch data upon successful mutation
+        addLink(newLink); // Update Zustand store with the new link
+        queryClient.invalidateQueries("links"); // Invalidate and refetch 'links' query
+        toast.success("Link saved successfully!"); // Show success notification
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || "Failed to save link");
+      },
+    }
+  );
+
   //Save link
   const handleSave = async () => {
     if (validateForm()) {
-      const newLinkList = linkList as IUserPlatformList;
-
-      try {
-        // Send the new link data to the backend API
-        const response = await fetch("http://localhost:5001/api/save-link", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newLinkList),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          // Successfully saved link to the database
-          toast.success("Link saved successfully!");
-
-          // Optionally, update local state or re-fetch data from the database
-          setAllLinkList((prevLinks) => [...(prevLinks || []), newLinkList]);
-          setLinkList(null);
-          setIsUnsaved(false);
-        } else {
-          // Show an error message if the request failed
-          toast.error(data.message || "Failed to save link.");
-        }
-      } catch (error) {
-        console.error("Failed to save link:", error);
-        toast.error("Failed to save link. Please try again.");
-      }
+      mutation.mutate(linkList as IUserPlatformList);
 
       // Retrieve previous saved items from localStorage, if any
-      const prevItems: IUserPlatformList[] = JSON.parse(
-        localStorage.getItem("savedLinkLists") || "[]"
-      );
+      // const prevItems: IUserPlatformList[] = JSON.parse(
+      //   localStorage.getItem("savedLinkLists") || "[]"
+      // );
 
       // Save to localStorage
-      localStorage.setItem(
-        "savedLinkLists",
-        JSON.stringify([...prevItems, newLinkList])
-      );
+      // localStorage.setItem(
+      //   "savedLinkLists",
+      //   JSON.stringify([...prevItems, newLinkList])
+      // );
 
       setIsUnsaved(false); // Mark as saved
-      toast.success("Link saved successfully!");
       setLinkList(null);
     }
   };
 
-  //Handle on change for input
   const handleChange = (e: string) => {
-    setLinkList((prev) => ({
-      ...prev,
+    setLinkList({
+      ...(linkList || null),
       platform_url: e,
-    }));
+    });
   };
 
   //Handle remove links locally
@@ -173,7 +144,7 @@ function Links() {
   return (
     <div className="flex md:justify-center items-start gap-5 py-5">
       <div className="w-[30%] flex h-[750px] items-center justify-center bg-white rounded-2xl p-6 relative hide-in-mobile">
-        <MobileMockup isSaved={!isUnsaved} />
+        <MobileMockup />
       </div>
       <div className="lg:w-2/3 w-full h-full bg-white rounded-2xl p-8">
         {/* Link box header  */}
@@ -199,47 +170,57 @@ function Links() {
         </button>
 
         {/* Main Link Box  */}
-        <div className="">
-          {linkList && (
-            <>
-              <LinkBox
-                index={allLinkLists?.length}
-                list={linkList}
-                handleChange={handleChange}
-                handleRemove={handleRemove}
-                setLinkList={setLinkList}
-                isSaved={false}
-              />
-              <div className="border-t border-gray-200 w-full mt-5 flex justify-end items-center">
-                <button
-                  onClick={handleSave}
-                  className={
-                    "border border-violet-500 hover:text-violet-500 px-5 hover:bg-white  bg-violet-600 text-white transition duration-300 py-2 rounded-lg text-sm font-semibold mt-5"
-                  }
-                >
-                  Save
-                </button>
-              </div>
-            </>
-          )}
-          {allLinkLists?.length > 0 || linkList ? (
-            allLinkLists?.map((list: IUserPlatformList, i: number) => (
-              <LinkBox
-                index={i}
-                list={list}
-                handleChange={handleChange}
-                handleRemove={handleRemove}
-                setLinkList={setLinkList}
-                isSaved={true}
-              />
-            ))
-          ) : (
-            <div className="border-[2px] border-dotted border-gray-300 rounded-lg w-full h-[400px] mt-6 flex flex-col items-center justify-center text-gray-400">
-              <LinkLogo size={60} />
-              <p className="text-sm font-medium">Link box is empty!</p>
+        {isLoading ? (
+          <>
+            <div role="status" className="animate-pulse mt-10">
+              <div className="h-[200px] bg-gray-100 rounded-2xl w-full mb-4"></div>
             </div>
-          )}
-        </div>
+            <div role="status" className="animate-pulse mt-10">
+              <div className="h-[200px] bg-gray-100 rounded-2xl w-full mb-4"></div>
+            </div>
+          </>
+        ) : (
+          <div className="">
+            {linkList && (
+              <>
+                <LinkBox
+                  index={allLinkLists?.length}
+                  list={linkList}
+                  handleChange={handleChange}
+                  handleRemove={handleRemove}
+                  isSaved={false}
+                />
+                <div className="border-t border-gray-200 w-full mt-5 flex justify-end items-center">
+                  <button
+                    onClick={handleSave}
+                    className={
+                      "border border-violet-500 hover:text-violet-500 px-5 hover:bg-white  bg-violet-600 text-white transition duration-300 py-2 rounded-lg text-sm font-semibold mt-5"
+                    }
+                  >
+                    Save
+                  </button>
+                </div>
+              </>
+            )}
+            {allLinkLists?.length > 0 || linkList ? (
+              allLinkLists?.map((list: IUserPlatformList, i: number) => (
+                <LinkBox
+                  key={i}
+                  index={i}
+                  list={list}
+                  handleChange={handleChange}
+                  handleRemove={handleRemove}
+                  isSaved={true}
+                />
+              ))
+            ) : (
+              <div className="border-[2px] border-dotted border-gray-300 rounded-lg w-full h-[400px] mt-6 flex flex-col items-center justify-center text-gray-400">
+                <LinkLogo size={60} />
+                <p className="text-sm font-medium">Link box is empty!</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Modal Component */}
