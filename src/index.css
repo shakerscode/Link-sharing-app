@@ -8,6 +8,22 @@ body #root {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hide scrollbar on a specific container */
+.hide-scrollbar {
+  overflow: auto;  /* Allow scrolling */
+}
+
+/* Hide scrollbar for all browsers */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
  
 
 @media screen and (max-width: 1024px)  {
