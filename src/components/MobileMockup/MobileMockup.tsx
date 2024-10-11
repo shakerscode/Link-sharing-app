@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { IUserInfo } from "~/interface/user.info";
 import { IUserPlatformList } from "~/interface/platform";
+import toast from "react-hot-toast";
 
 function MobileMockup({
   isSaved,
@@ -18,18 +19,36 @@ function MobileMockup({
     null
   );
   const arr = [1, 2, 3, 4];
-
-  const links = JSON.parse(localStorage.getItem("savedLinkLists"));
-  const info = JSON.parse(localStorage.getItem("uInfo"));
+ 
 
   useEffect(() => {
-    if (info) {
-      setUInof(info);
-    }
-    if (links) {
-      setAllLinkList(links);
-    }
-  }, [isSaved]);
+    const fetchData = async () => {
+      try {
+        // Send the new link data to the backend API
+        const response = await fetch("http://localhost:5001/api/links", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Optionally, update local state or re-fetch data from the database
+          setAllLinkList(data);
+        } else {
+          // Show an error message if the request failed
+          toast.error(data.message || "Failed to save link.");
+        }
+      } catch (error) {
+        console.error("Failed to save link:", error);
+        toast.error("Failed to save link. Please try again.");
+      }
+    };
+    fetchData();
+   
+  }, []);
 
   return (
     <>

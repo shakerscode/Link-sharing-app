@@ -4,6 +4,7 @@ import { IUserPlatformList } from "~/interface/platform";
 import { toast } from "react-hot-toast";
 import LinkBox from "../ui/LinkBox";
 import MobileMockup from "../MobileMockup/MobileMockup";
+import Modal from "../ui/Modal";
 
 function Links() {
   const [linkList, setLinkList] = useState<IUserPlatformList | null>(null);
@@ -12,15 +13,54 @@ function Links() {
     null
   );
   const [isUnsaved, setIsUnsaved] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Send the new link data to the backend API
+        const response = await fetch("http://localhost:5001/api/links", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Successfully saved link to the database
+          toast.success("Link saved successfully!");
+
+          // Optionally, update local state or re-fetch data from the database
+          setAllLinkList(data);
+          setLinkList(null);
+          setIsUnsaved(false);
+        } else {
+          // Show an error message if the request failed
+          toast.error(data.message || "Failed to save link.");
+        }
+      } catch (error) {
+        console.error("Failed to save link:", error);
+        toast.error("Failed to save link. Please try again.");
+      }
+    };
+    fetchData();
     const prevLists: IUserPlatformList[] = JSON.parse(
       localStorage.getItem("savedLinkLists") || "[]"
     );
     if (prevLists) {
       setAllLinkList(prevLists);
     }
-  }, [isUnsaved]);
+  }, []);
 
   // handle form validation
   const validateForm = () => {
@@ -65,9 +105,38 @@ function Links() {
   };
 
   //Save link
-  const handleSave = () => {
+  const handleSave = async () => {
     if (validateForm()) {
       const newLinkList = linkList as IUserPlatformList;
+
+      try {
+        // Send the new link data to the backend API
+        const response = await fetch("http://localhost:5001/api/save-link", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newLinkList),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Successfully saved link to the database
+          toast.success("Link saved successfully!");
+
+          // Optionally, update local state or re-fetch data from the database
+          setAllLinkList((prevLinks) => [...(prevLinks || []), newLinkList]);
+          setLinkList(null);
+          setIsUnsaved(false);
+        } else {
+          // Show an error message if the request failed
+          toast.error(data.message || "Failed to save link.");
+        }
+      } catch (error) {
+        console.error("Failed to save link:", error);
+        toast.error("Failed to save link. Please try again.");
+      }
 
       // Retrieve previous saved items from localStorage, if any
       const prevItems: IUserPlatformList[] = JSON.parse(
@@ -96,8 +165,9 @@ function Links() {
 
   //Handle remove links locally
   const handleRemove = () => {
-    setLinkList(null);
-    setIsUnsaved(false);
+    // setLinkList(null);
+    // setIsUnsaved(false);
+    openModal();
   };
 
   return (
@@ -171,6 +241,26 @@ function Links() {
           )}
         </div>
       </div>
+
+      {/* Modal Component */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        header={
+          <div>
+            <p>Header</p>
+          </div>
+        }
+        footer={
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded-lg"
+            onClick={closeModal}
+          >
+            Close
+          </button>
+        }
+        modalContent={<div>Hello world</div>}
+      />
     </div>
   );
 }
