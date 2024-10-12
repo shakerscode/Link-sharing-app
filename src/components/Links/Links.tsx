@@ -22,6 +22,7 @@ function Links() {
     setAllLinkLists,
     addLink,
     updatedLinkList,
+    setUpdatedLinkList
   } = useLinkStore();
   const [selectedLink, setSelectedLink] = useState<IUserPlatformList | null>(
     null
@@ -47,6 +48,8 @@ function Links() {
       },
     }
   );
+ 
+  
 
   if (error) {
     toast.error((error as Error).message);
@@ -168,6 +171,7 @@ function Links() {
         toast.success("Link updated successfully");
         // Invalidate and refetch the "links" query to ensure UI updates with the new data
         queryClient.invalidateQueries("links");
+        setUpdatedLinkList(null)
         closeModal(); // Assuming this function is available in your context to close any modals
       },
       onError: (error: Error) => {

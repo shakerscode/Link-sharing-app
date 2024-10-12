@@ -27,7 +27,7 @@ const LinkBox: FC<LinkBoxProps> = ({
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<string | undefined>(
-    list?.platform_name
+    null
   );
   const { linkList, setLinkList, setUpdatedLinkList, updatedLinkList } =
     useLinkStore();
@@ -197,7 +197,7 @@ const LinkBox: FC<LinkBoxProps> = ({
                 handleChange(e.target.value);
               }
             }}
-            defaultValue={list?.platform_url ? list?.platform_url : ""}
+            value={updatedLinkList?.platform_url || list?.platform_url || ""}
             type="text"
             placeholder={`https://www.${
               selectedPlatform ? selectedPlatform?.toLowerCase() : "twitter"
