@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { CiImageOn } from "react-icons/ci";
 import userImg from "~/assets/images/user.jpg";
 import { IUserInfo } from "~/interface/user.info";
+import { useUserStore } from "~/zustand/store/useUserStore";
 
 const MAX_IMAGE_SIZE = 1024 * 1024; // 1MB
 const ALLOWED_FORMATS = {
@@ -19,6 +20,7 @@ function ProfileDetails() {
   const [userDetails, setUserDetails] = useState<IUserInfo | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
+  const {authenticateUserDetails} = useUserStore()
 
   const handleDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -139,6 +141,7 @@ function ProfileDetails() {
                 }))
               }
               required
+              defaultValue={authenticateUserDetails?.first_name || ""}
               placeholder="Jhon Doe"
               className="w-full lg:w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
             />
@@ -155,6 +158,7 @@ function ProfileDetails() {
                   last_name: e.target.value,
                 }))
               }
+              defaultValue={authenticateUserDetails?.last_name || ""}
               placeholder="Doe"
               className="w-full lg:w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
             />
@@ -170,6 +174,8 @@ function ProfileDetails() {
                   email: e.target.value,
                 }))
               }
+              disabled
+              value={authenticateUserDetails?.email}
               placeholder="youremail@email.com"
               className="w-full md:w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
             />

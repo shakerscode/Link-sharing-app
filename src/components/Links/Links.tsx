@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { LinkLogo } from "~/assets/icons/LinkLogo";
 import { IUserPlatformList } from "~/interface/platform";
 import { toast } from "react-hot-toast";

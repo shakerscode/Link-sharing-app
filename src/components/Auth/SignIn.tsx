@@ -10,14 +10,15 @@ import { LinkLogo } from "~/assets/icons/LinkLogo";
 import User from "~/assets/icons/User";
 import { fetcher } from "~/zustand/api";
 import Spinner from "../ui/Spinner";
+import { GoEyeClosed } from "react-icons/go";
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location?.state?.from?.pathname || "/links"; 
-  
+  const from = location?.state?.from?.pathname || "/links";
+  const [eyeOpen, setEyeOpen] = useState<boolean>(false);
 
   const mutation = useMutation(
     async (userData: { email: string; password: string }) =>
@@ -91,8 +92,7 @@ function SignIn() {
           <div>
             <label className="text-gray-800 text-sm mb-2 block">Email</label>
             <div className="relative flex items-center">
-              <input
-                name="example@email.com"
+              <input 
                 type="text"
                 value={email || ""}
                 onChange={(e) => setEmail(e.target.value)}
@@ -106,16 +106,25 @@ function SignIn() {
           <div className="mt-4">
             <label className="text-gray-800 text-sm mb-2 block">Password</label>
             <div className="relative flex items-center">
-              <input
-                name="password"
-                type="password"
+              <input 
+                type={eyeOpen ? "text" : "password"}
                 value={password || ""}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-md outline-violet-600 hover:shadow hover:shadow-violet-200 transition-all duration-300"
                 placeholder="********"
               />
-              <Eye />
+              <button
+                type="button"
+                className="flex items-center justify-center"
+                onClick={() => setEyeOpen(!eyeOpen)}
+              >
+                {eyeOpen ? (
+                  <Eye />
+                ) : (
+                  <GoEyeClosed className="w-[18px] h-[18px] absolute right-4 cursor-pointer text-gray-400" />
+                )}
+              </button>
             </div>
           </div>
           <div className="mt-4 text-right">
