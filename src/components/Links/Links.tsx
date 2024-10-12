@@ -111,11 +111,11 @@ function Links() {
     }
   );
 
+
   //Save link
   const handleSave = async () => {
     if (validateForm()) {
-      mutation.mutate(linkList as IUserPlatformList);
-
+      mutation.mutate(linkList as IUserPlatformList); 
       setIsUnsaved(false);
       setLinkList(null);
     }
@@ -137,7 +137,7 @@ function Links() {
 
   return (
     <div className="flex md:justify-center items-start gap-5 py-5">
-      <div className="w-[30%] flex h-[750px] items-center justify-center bg-white rounded-2xl p-6 relative hide-in-mobile">
+      <div className="w-1/3 flex h-auto items-center justify-center bg-white rounded-2xl p-6 relative hide-in-mobile">
         <MobileMockup />
       </div>
       <div className="lg:w-2/3 w-full h-full bg-white rounded-2xl p-8">

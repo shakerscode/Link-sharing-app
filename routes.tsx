@@ -20,35 +20,47 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/links",
-        element: <ProtectedRoute />, // Wrap with ProtectedRoute
-        children: [
-          {
-            path: "/links",
-            element: <Links />,
-          },
-        ],
+        element: (
+          <ProtectedRoute>
+            <Links />
+          </ProtectedRoute>
+        ),
+        // children: [
+        //   {
+        //     path: "/links",
+        //     element: <Links />,
+        //   },
+        // ],
       },
       {
         path: "/profile",
-        element: <ProtectedRoute />, // Wrap with ProtectedRoute
-        children: [
-          {
-            path: "/profile",
-            element: <ProfileDetails />,
-          },
-        ],
+        element: (
+          <ProtectedRoute>
+            <ProfileDetails />
+          </ProtectedRoute>
+        ), // Wrap with ProtectedRoute
+        // children: [
+        //   {
+        //     path: "/profile",
+        //     element: <ProfileDetails />,
+        //   },
+        // ],
       },
     ],
   },
   {
     path: "/preview",
-    element: <ProtectedRoute />, // Wrap with ProtectedRoute
-    children: [
-      {
-        path: "/preview",
-        element: <Preview />,
-      },
-    ],
+    element: (
+      <ProtectedRoute>
+        <Preview />
+      </ProtectedRoute>
+    ), // Wrap with ProtectedRoute
+    // children: [
+    //   {
+    //     path: "/preview",
+    //     element: <Preview />,
+    //   },
+    // ],
   },
   {
     path: "/sign-in",

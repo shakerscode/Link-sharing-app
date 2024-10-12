@@ -1,11 +1,56 @@
+import toast from "react-hot-toast";
+import { HiLogin, HiOutlineLogout } from "react-icons/hi";
+import { IoMdPersonAdd } from "react-icons/io";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { Link, useLocation } from "react-router-dom";
+import { useMutation, useQueryClient } from "react-query";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LinkLogo } from "~/assets/icons/LinkLogo";
 import { navLinks } from "~/constants/navLinks";
+import { useAuth } from "~/hooks/useAuth";
 import { INav } from "~/interface/navInterface";
+import { fetcher } from "~/zustand/api";
+import { useLinkStore } from "~/zustand/store/useLinkStore";
+import { useUserStore } from "~/zustand/store/useUserStore";
+import Spinner from "../ui/Spinner";
 
 export default function Header() {
   const location = useLocation();
+  const isAuthenticated = useAuth();
+  const { setIsAuthenticated, setAuthenticatedUserDetails } = useUserStore();
+  const navigate = useNavigate();
+  const{setAllLinkLists}=useLinkStore()
+
+  // Mutation for saving a new link
+  const mutation = useMutation(
+    async () =>
+      fetcher("/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Include credentials to send cookies
+      }),
+    {
+      onSuccess: () => {
+        // Clear user session (you may use Zustand or Context API)
+        setAuthenticatedUserDetails(null);
+        setIsAuthenticated(false);
+        setAllLinkLists([])
+        toast.success("Logout successfully!");
+
+        // Redirect to home or login page
+        navigate("/sign-in"); // Assuming you're using react-router
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || "Failed to log out");
+      },
+    }
+  );
+
+  //handle logout
+  const handleLogout = () => {
+    mutation?.mutate();
+  };
+
+  const { isLoading } = mutation; 
 
   return (
     <div className="bg-white rounded-2xl h-16 p-4 flex justify-between items-center">
@@ -16,7 +61,7 @@ export default function Header() {
             {/* imported svg logo from icon folder  */}
             <LinkLogo size={32} />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 hide-name">
+          <h2 className="text-3xl font-bold text-gray-900 hide-name">
             devlinks
           </h2>
         </div>
@@ -53,17 +98,49 @@ export default function Header() {
             <p className="hide-name">Preview</p>
           </button>
         </Link>
-        <Link to={"/sign-in"}>
+        {isAuthenticated ? (
           <button
+            onClick={handleLogout}
             className={
-              "border border-violet-500 text-white px-5 bg-violet-500 hover:text-violet-500 hover:bg-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
+              "border border-violet-500 text-white px-3 lg:px-5 bg-violet-500 hover:text-violet-500 hover:bg-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
             }
           >
-            <MdOutlineRemoveRedEye className="block md:hidden text-xl" />
+            {!isLoading && (
+              <HiOutlineLogout className="block md:hidden text-xl" />
+            )}
 
-            <p className="hide-name">Sign in</p>
+            {isLoading ? (
+              <Spinner/>
+            ) : (
+              <p className="hide-name">Log out</p>
+            )}
           </button>
-        </Link>
+        ) : (
+          <>
+            <Link to={"/sign-in"}>
+              <button
+                className={
+                  "border border-violet-500 text-white  px-3 lg:px-5 bg-violet-500 hover:text-violet-500 hover:bg-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
+                }
+              >
+                <HiLogin className="block md:hidden text-xl" />
+
+                <p className="hide-name">Sign in</p>
+              </button>
+            </Link>
+            <Link to={"/sign-up"}>
+              <button
+                className={
+                  "border border-violet-500 text-white  px-3 lg:px-5 bg-violet-500 hover:text-violet-500 hover:bg-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
+                }
+              >
+                <IoMdPersonAdd className="block md:hidden text-xl" />
+
+                <p className="hide-name">Sign up</p>
+              </button>
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

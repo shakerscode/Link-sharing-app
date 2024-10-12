@@ -19,7 +19,6 @@ function ProfileDetails() {
   const [userDetails, setUserDetails] = useState<IUserInfo | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
-  
 
   const handleDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -73,8 +72,8 @@ function ProfileDetails() {
 
   return (
     <div className="flex items-start gap-5 py-5">
-      <div className="hide-in-mobile w-[30%] flex h-[750px] items-center justify-center bg-white rounded-2xl p-6 relative">
-        <MobileMockup  />
+      <div className="w-1/3 flex h-auto items-center justify-center bg-white rounded-2xl p-6 relative hide-in-mobile">
+        <MobileMockup />
       </div>
       <div className="w-full lg:w-2/3 h-full bg-white rounded-2xl p-8">
         {/* Profile box header  */}

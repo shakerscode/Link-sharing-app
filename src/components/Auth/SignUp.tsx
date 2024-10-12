@@ -12,6 +12,7 @@ import User from "~/assets/icons/User";
 import { IUserInfoWithoutProfileUrl } from "~/interface/user.info";
 import { fetcher } from "~/zustand/api";
 import { useUserStore } from "~/zustand/store/useUserStore";
+import Spinner from "../ui/Spinner";
 
 function SignUp() {
   const { setUserDetails, first_name, last_name, email, password } =
@@ -19,7 +20,7 @@ function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [eyeOpen, setEyeOpen] = useState<boolean>(false);
   const [eyeOpenConf, setEyeOpenConf] = useState<boolean>(false);
-  const navigate =useNavigate()
+  const navigate = useNavigate();
 
   // Improved form validation with return statements
   const formValidation = () => {
@@ -65,7 +66,7 @@ function SignUp() {
           password: "",
         });
         setConfirmPassword("");
-        navigate("/links")
+        navigate("/links");
       },
       onError: (error: Error) => {
         toast.error(error.message || "Failed to register");
@@ -77,19 +78,23 @@ function SignUp() {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (formValidation()) {
-        mutation.mutate({ first_name, last_name, email, password });
+      mutation.mutate({ first_name, last_name, email, password });
     }
   };
+
+  const { isLoading } = mutation;
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="bg-white rounded-xl sm:px-6 px-4 py-8 max-w-md w-full h-max shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] max-lg:mx-auto">
-        <div className="flex items-center justify-center gap-2 py-2">
-          <div className="text-violet-600">
-            <LinkLogo size={52} />
+        <Link to={"/"}>
+          <div className="flex items-center justify-center gap-2 py-2">
+            <div className="text-violet-600">
+              <LinkLogo size={52} />
+            </div>
+            <h1 className="text-4xl font-extrabold text-gray-800">devLinks</h1>
           </div>
-          <h1 className="text-4xl font-extrabold text-gray-800">devLinks</h1>
-        </div>
+        </Link>
         <div className="h-[1.5px] w-full bg-gray-200"></div>
         <form onSubmit={handleSubmit}>
           <div className="sm:flex items-center justify-center sm:items-start space-x-4 max-sm:space-y-4 my-8">
@@ -223,7 +228,7 @@ function SignUp() {
               type="submit"
               className="w-full shadow-xl py-3 px-6 text-sm font-semibold rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none"
             >
-              Sign in
+              {isLoading ? <Spinner /> : "Sign up"}
             </button>
           </div>
           <p className="text-sm mt-8 text-center text-gray-800">

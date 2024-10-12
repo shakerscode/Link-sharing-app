@@ -12,37 +12,54 @@ function MobileMockup({ showMockup = true }: { showMockup?: boolean }) {
   const { authenticateUserDetails: uInfo } = useUserStore();
 
   const arr = [1, 2, 3, 4];
+  const array = Array.from(
+    { length: arr?.length - allLinkLists?.length },
+    (_, i) => i + 1
+  );
 
   return (
     <>
-      {showMockup && <img src={mobileMoc} alt="" className="w-full h-full" />}
       <div
-        className="w-2/3 h-full absolute  flex flex-col items-center justify-center overflow-y-scroll "
-        style={{
-          left: "50%",
-          top: "0%",
-          transform: "translateX(-50%)",
-        }}
+        className={`h-[600px] rounded-[34px] ${
+          showMockup ? "border-[1.5px] w-[80%]" : "border-none w-full"
+        } relative border-gray-300 p-2.5`}
       >
-        <div className="w-40 h-40 rounded-full bg-gray-200"></div>
-        {uInfo?.first_name || uInfo?.last_name ? (
-          <h6 className="text-2xl font-bold text-gray-700 mt-5">
-            {uInfo?.first_name} {uInfo?.last_name}
-          </h6>
-        ) : (
-          <div className="w-2/3 h-6 mt-8 rounded-full bg-gray-200"></div>
+        {showMockup && (
+          <div
+            className="w-4 h-4 border-[1.5px] border-gray-300 rounded-full absolute top-2 bg-gray-800"
+            style={{
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          ></div>
         )}
-        {uInfo?.email ? (
-          <p className="text-sm text-gray-400 font-normal mt-1">
-            {uInfo?.email}
-          </p>
-        ) : (
-          <div className="w-1/3 h-4 mt-4 rounded-full bg-gray-200"></div>
-        )}
-        <div className={"mt-5"}></div>
-        <div className="w-full overflow-y-scroll h-[280px] hide-scrollbar">
-          {allLinkLists?.length > 0
-            ? allLinkLists?.map((list, i) => (
+        <div
+          className="w-full h-full absolute p-5 flex flex-col items-center justify-center"
+          style={{
+            left: "50%",
+            top: "5%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          <div className="w-32 h-32 rounded-full bg-gray-200"></div>
+          {uInfo?.first_name || uInfo?.last_name ? (
+            <h6 className="text-2xl font-bold text-gray-700 mt-5">
+              {uInfo?.first_name} {uInfo?.last_name}
+            </h6>
+          ) : (
+            <div className="w-2/3 h-6 mt-8 rounded-full bg-gray-200"></div>
+          )}
+          {uInfo?.email ? (
+            <p className="text-sm text-gray-400 font-normal mt-1">
+              {uInfo?.email}
+            </p>
+          ) : (
+            <div className="w-1/3 h-4 mt-4 rounded-full bg-gray-200"></div>
+          )}
+          <div className={"mt-2"}></div>
+          <div className="w-full overflow-y-scroll h-[280px] hide-scrollbar">
+            {allLinkLists?.length > 0 &&
+              allLinkLists?.map((list, i) => (
                 <Link
                   to={list?.platform_url}
                   target="_blank"
@@ -77,13 +94,15 @@ function MobileMockup({ showMockup = true }: { showMockup?: boolean }) {
                     <IoMdArrowForward className="flex-end flex ml-auto text-white" />
                   </div>
                 </Link>
-              ))
-            : arr.map((_, i: number) => (
-                <div
-                  key={i}
-                  className="w-full mt-4 h-12 rounded-xl bg-gray-200"
-                ></div>
               ))}
+
+            {array.map((_, i: number) => (
+              <div
+                key={i}
+                className="w-full mt-4 h-12 rounded-xl bg-gray-200"
+              ></div>
+            ))}
+          </div>
         </div>
       </div>
     </>

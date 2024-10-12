@@ -1,22 +1,31 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "~/hooks/useAuth";
+import Spinner from "../ui/Spinner";
+import { LinkLogo } from "~/assets/icons/LinkLogo";
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useAuth();
 
-  // If the hook is still determining authentication, show a loading indicator or null
-  if (isAuthenticated === false) {
-    return <div>Loading...</div>; // Replace this with a loading spinner or any loading indicator
+  if (isAuthenticated === null) {
+    return (
+      <div className="bg-gray-300 mt-5 rounded-3xl h-screen flex items-center justify-center w-full flex-col">
+        <div className="text-violet-500">
+          <LinkLogo size={60} />
+        </div>
+        <div className="flex gap-2 items-center">
+          <Spinner /> Site is loading...
+        </div>
+      </div>
+    );
   }
 
-  // If the user is not authenticated, navigate to sign-in
+  // If the user is not authenticated, redirect to the sign-in page
   if (!isAuthenticated) {
-    return <Navigate to="/sign-in" />;
+    return <Navigate to="/sign-in" replace />;
   }
 
   // If the user is authenticated, render the child components
-  return <Outlet />;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
