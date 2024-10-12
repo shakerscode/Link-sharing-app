@@ -66,9 +66,12 @@ function SignUp() {
           password: "",
         });
         setConfirmPassword("");
-        navigate("/links");
+        navigate("/");
       },
+      
       onError: (error: Error) => {
+        console.log(error?.message);
+        
         toast.error(error.message || "Failed to register");
       },
     }

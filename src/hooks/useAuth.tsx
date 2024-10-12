@@ -27,21 +27,17 @@ export const useAuth = () => {
       onSuccess: (data) => {
         setAuthenticatedUserDetails(data);
         setIsAuthenticated(true);
+        console.log("yes");
+        
       },
       onError: () => {
         setIsAuthenticated(false);
-      },
-      retry: false, // Do not retry on error
+      }, 
     }
   );
 
-  // Handle side effects for error and navigation
-  useEffect(() => {
-    if (error) {
-      // toast.error("Failed to fetch user details.");
-      setIsAuthenticated(false);
-    }
-  }, [error, setIsAuthenticated, navigate]);
+console.log(isLoading);
+
 
   // If the query is still loading, return false for `isAuthenticated` to prevent premature access
   if (isLoading) {

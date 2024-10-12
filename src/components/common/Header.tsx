@@ -32,7 +32,7 @@ export default function Header() {
       onSuccess: () => {
         // Clear user session (you may use Zustand or Context API)
         setAuthenticatedUserDetails(null);
-        setIsAuthenticated(false);
+        setIsAuthenticated(null);
         setAllLinkLists([])
         toast.success("Logout successfully!");
 
