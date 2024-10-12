@@ -92,7 +92,7 @@ function SignIn() {
           <div>
             <label className="text-gray-800 text-sm mb-2 block">Email</label>
             <div className="relative flex items-center">
-              <input 
+              <input
                 type="text"
                 value={email || ""}
                 onChange={(e) => setEmail(e.target.value)}
@@ -106,7 +106,7 @@ function SignIn() {
           <div className="mt-4">
             <label className="text-gray-800 text-sm mb-2 block">Password</label>
             <div className="relative flex items-center">
-              <input 
+              <input
                 type={eyeOpen ? "text" : "password"}
                 value={password || ""}
                 onChange={(e) => setPassword(e.target.value)}
@@ -147,12 +147,12 @@ function SignIn() {
           </div>
           <p className="text-sm mt-8 text-center text-gray-800">
             Don't have an account{" "}
-            <a
-              href="/sign-up"
+            <Link
+              to="/sign-up"
               className="text-violet-600 font-semibold hover:underline ml-1 whitespace-nowrap"
             >
               Register here
-            </a>
+            </Link>
           </p>
         </form>
       </div>
