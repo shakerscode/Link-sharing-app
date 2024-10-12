@@ -29,7 +29,6 @@ function Links() {
   const [eventFrom, setEventFrom] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
- 
 
   // Use React Query to fetch the links from the backend
   const { data, error, isLoading } = useQuery(
@@ -156,10 +155,6 @@ function Links() {
       id: string;
       updatedLinkList: IUserPlatformList | null;
     }) => {
-      if (!updatedLinkList) {
-        throw new Error("Invalid link data: linkList is null or undefined.");
-      }
-
       return fetcher(`/update/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -171,10 +166,9 @@ function Links() {
       onSuccess: () => {
         // Show success notification
         toast.success("Link updated successfully");
-        closeModal(); // Assuming this function is available in your context to close any modals
-
         // Invalidate and refetch the "links" query to ensure UI updates with the new data
         queryClient.invalidateQueries("links");
+        closeModal(); // Assuming this function is available in your context to close any modals
       },
       onError: (error: Error) => {
         // Handle error
@@ -234,7 +228,6 @@ function Links() {
           : selectedLink?.platform_name
       }\\.com\\/[A-Za-z0-9_-]+`
     );
-    console.log(!platformPattern.test(updatedLinkList?.platform_url));
 
     if (id && updatedLinkList) {
       // if(updatedLinkList?.platform_name &&  )
@@ -273,7 +266,7 @@ function Links() {
         </button>
 
         {/* Main Link Box  */}
-        {isLoading ? (
+        {isLoading || isUpdating ? (
           <>
             <div role="status" className="animate-pulse mt-10">
               <div className="h-[200px] bg-gray-100 rounded-2xl w-full mb-4"></div>

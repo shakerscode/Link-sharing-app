@@ -17,10 +17,8 @@ const ProtectedRoute = ({ children }) => {
         </div>
       </div>
     );
-  }
-  console.log(isAuthenticated);
+  } 
   
-
   // If the user is not authenticated, redirect to the sign-in page
   if (!isAuthenticated) {
     return <Navigate to="/sign-in" replace />;

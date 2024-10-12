@@ -1,14 +1,10 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useUserStore } from "~/zustand/store/useUserStore";
 import { fetcher } from "~/zustand/api";
-import { toast } from "react-hot-toast";
 import { useQuery } from "react-query";
 import { LinkLogo } from "~/assets/icons/LinkLogo";
 import Spinner from "~/components/ui/Spinner";
 
 export const useAuth = () => {
-  const navigate = useNavigate();
   const { setAuthenticatedUserDetails, isAuthenticated, setIsAuthenticated } =
     useUserStore();
 
@@ -27,17 +23,12 @@ export const useAuth = () => {
       onSuccess: (data) => {
         setAuthenticatedUserDetails(data);
         setIsAuthenticated(true);
-        console.log("yes");
-        
       },
       onError: () => {
         setIsAuthenticated(false);
-      }, 
+      },
     }
   );
-
-console.log(isLoading);
-
 
   // If the query is still loading, return false for `isAuthenticated` to prevent premature access
   if (isLoading) {
