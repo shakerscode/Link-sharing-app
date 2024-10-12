@@ -5,4 +5,5 @@ export interface IPlatform {
 export interface IUserPlatformList {
   platform_name: string | null;
   platform_url: string | null;
+  _id?: string;
 }

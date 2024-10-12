@@ -8,14 +8,28 @@ import Modal from "../ui/Modal";
 import { useLinkStore } from "~/zustand/store/useLinkStore";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { fetcher } from "~/zustand/api";
+import Spinner from "../ui/Spinner";
+import { IoMdClose } from "react-icons/io";
+import PrimaryButton from "../ui/PrimaryBtn";
 
 function Links() {
   const [isUnsaved, setIsUnsaved] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { linkList, allLinkLists, setLinkList, setAllLinkLists, addLink } =
-    useLinkStore();
+  const {
+    linkList,
+    allLinkLists,
+    setLinkList,
+    setAllLinkLists,
+    addLink,
+    updatedLinkList,
+  } = useLinkStore();
+  const [selectedLink, setSelectedLink] = useState<IUserPlatformList | null>(
+    null
+  );
+  const [eventFrom, setEventFrom] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
+ 
 
   // Use React Query to fetch the links from the backend
   const { data, error, isLoading } = useQuery(
@@ -48,7 +62,7 @@ function Links() {
   };
 
   // handle form validation
-  const validateForm = () => {
+  const validateForm = (linkList: IUserPlatformList) => {
     if (!linkList) {
       toast.error("You must save the current platform");
       return false;
@@ -111,15 +125,75 @@ function Links() {
     }
   );
 
+  //Mutation for delete a link
+  const mutationForDelete = useMutation(
+    async (id: string) =>
+      fetcher(`/delete/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      }),
+    {
+      onSuccess: () => {
+        // Show success notification
+        toast.success("Link deleted successfully");
+        closeModal();
+        // Invalidate and refetch the "links" query to ensure UI updates with the new data
+        queryClient.invalidateQueries("links");
+      },
+      onError: (error: Error) => {
+        // Handle error
+        toast.error(error.message || "Failed to delete the link");
+      },
+    }
+  );
+
+  const mutationForUpdate = useMutation(
+    async ({
+      id,
+      updatedLinkList,
+    }: {
+      id: string;
+      updatedLinkList: IUserPlatformList | null;
+    }) => {
+      if (!updatedLinkList) {
+        throw new Error("Invalid link data: linkList is null or undefined.");
+      }
+
+      return fetcher(`/update/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedLinkList),
+        credentials: "include",
+      });
+    },
+    {
+      onSuccess: () => {
+        // Show success notification
+        toast.success("Link updated successfully");
+        closeModal(); // Assuming this function is available in your context to close any modals
+
+        // Invalidate and refetch the "links" query to ensure UI updates with the new data
+        queryClient.invalidateQueries("links");
+      },
+      onError: (error: Error) => {
+        // Handle error
+        toast.error(error.message || "Failed to update the link");
+      },
+    }
+  );
 
   //Save link
   const handleSave = async () => {
-    if (validateForm()) {
-      mutation.mutate(linkList as IUserPlatformList); 
+    if (validateForm(linkList)) {
+      mutation.mutate(linkList as IUserPlatformList);
       setIsUnsaved(false);
       setLinkList(null);
     }
   };
+  const { isLoading: isSaving } = mutation;
+  const { isLoading: isDeleteing } = mutationForDelete;
+  const { isLoading: isUpdating } = mutationForUpdate;
 
   const handleChange = (e: string) => {
     setLinkList({
@@ -129,10 +203,45 @@ function Links() {
   };
 
   //Handle remove links locally
-  const handleRemove = () => {
-    // setLinkList(null);
-    // setIsUnsaved(false);
+  const handleRemove = (list: IUserPlatformList) => {
+    if (list?._id) {
+      setSelectedLink(list);
+      setEventFrom("delete");
+      openModal();
+    } else {
+      setLinkList(null);
+      setIsUnsaved(false);
+    }
+  };
+
+  const handleEdit = (list: IUserPlatformList) => {
+    setSelectedLink(list);
+    setEventFrom("edit");
     openModal();
+  };
+
+  const handleDeleteLinkFromDB = (id: string) => {
+    if (id) {
+      mutationForDelete.mutate(id);
+    }
+  };
+
+  const handleUpdateInDB = (id: string) => {
+    const platformPattern = new RegExp(
+      `^https:\\/\\/(www\\.)?${
+        updatedLinkList?.platform_name
+          ? updatedLinkList?.platform_name
+          : selectedLink?.platform_name
+      }\\.com\\/[A-Za-z0-9_-]+`
+    );
+    console.log(!platformPattern.test(updatedLinkList?.platform_url));
+
+    if (id && updatedLinkList) {
+      // if(updatedLinkList?.platform_name &&  )
+      mutationForUpdate.mutate({ id, updatedLinkList });
+    } else {
+      toast.error("You must make some changes");
+    }
   };
 
   return (
@@ -181,18 +290,18 @@ function Links() {
                   index={allLinkLists?.length}
                   list={linkList}
                   handleChange={handleChange}
-                  handleRemove={handleRemove}
+                  handleRemove={() => handleRemove(linkList)}
+                  handleEdit={() => handleEdit(linkList)}
                   isSaved={false}
                 />
                 <div className="border-t border-gray-200 w-full mt-5 flex justify-end items-center">
-                  <button
+                  <PrimaryButton
                     onClick={handleSave}
-                    className={
-                      "border border-violet-500 hover:text-violet-500 px-5 hover:bg-white  bg-violet-600 text-white transition duration-300 py-2 rounded-lg text-sm font-semibold mt-5"
-                    }
+                    isLoading={isSaving}
+                    className="mt-5"
                   >
-                    Save
-                  </button>
+                    <p>Save</p>
+                  </PrimaryButton>
                 </div>
               </>
             )}
@@ -203,7 +312,8 @@ function Links() {
                   index={i}
                   list={list}
                   handleChange={handleChange}
-                  handleRemove={handleRemove}
+                  handleRemove={() => handleRemove(list)}
+                  handleEdit={() => handleEdit(list)}
                   isSaved={true}
                 />
               ))
@@ -222,19 +332,62 @@ function Links() {
         isOpen={isModalOpen}
         onClose={closeModal}
         header={
-          <div>
-            <p>Header</p>
+          <div className="flex justify-between items-center">
+            <h2 className="capitalize text-xl text-gray-800 font-bold">
+              {eventFrom} link
+            </h2>
+            <div
+              onClick={closeModal}
+              className="hover:bg-gray-200 w-8 h-8 p-1 flex items-center justify-center cursor-pointer rounded-md"
+            >
+              <IoMdClose />
+            </div>
           </div>
         }
         footer={
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded-lg"
-            onClick={closeModal}
-          >
-            Close
-          </button>
+          <div className="flex gap-2 mt-2">
+            <button
+              className="bg-white border border-gray-200 shadow hover:bg-gray-200 text-gray-800 transition-all duration-300 font-medium px-4 py-2 rounded-lg"
+              onClick={closeModal}
+            >
+              Close
+            </button>
+            {eventFrom === "delete" ? (
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                onClick={() => handleDeleteLinkFromDB(selectedLink?._id)}
+              >
+                {isDeleteing ? <Spinner /> : "Delete"}
+              </button>
+            ) : (
+              <PrimaryButton
+                onClick={() => handleUpdateInDB(selectedLink?._id)}
+                isLoading={isUpdating}
+              >
+                <p>Save</p>
+              </PrimaryButton>
+            )}
+          </div>
         }
-        modalContent={<div>Hello world</div>}
+        modalContent={
+          eventFrom === "delete" ? (
+            <div className="h-16 py-3 text-center">
+              <p>Are you sure you want to delete this item?</p>
+            </div>
+          ) : eventFrom === "edit" ? (
+            <div className="my-2">
+              <LinkBox
+                index={null}
+                list={selectedLink}
+                handleChange={handleChange}
+                handleRemove={null}
+                handleEdit={null}
+                isSaved={true}
+                changeView={true}
+              />
+            </div>
+          ) : undefined
+        }
       />
     </div>
   );

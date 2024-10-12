@@ -5,8 +5,10 @@ export const useLinkStore = create<LinkState>()(
   persist(
     (set) => ({
       linkList: null,
+      updatedLinkList: null,
       allLinkLists: [],
       setLinkList: (link) => set({ linkList: link }),
+      setUpdatedLinkList: (link) => set({ updatedLinkList: link }),
       setAllLinkLists: (links) => set(() => ({ allLinkLists: links })),
       addLink: (link) =>
         set((state) => ({ allLinkLists: [...state.allLinkLists, link] })),

@@ -11,7 +11,9 @@ interface LinkBoxProps {
   list: IUserPlatformList;
   handleChange: (value: string) => void;
   handleRemove: () => void;
+  handleEdit: () => void;
   isSaved: boolean;
+  changeView?: boolean;
 }
 
 const LinkBox: FC<LinkBoxProps> = ({
@@ -19,13 +21,16 @@ const LinkBox: FC<LinkBoxProps> = ({
   list,
   handleChange,
   handleRemove,
+  handleEdit,
   isSaved,
+  changeView = false,
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<string | undefined>(
     list?.platform_name
   );
-  const { linkList, setLinkList } = useLinkStore();
+  const { linkList, setLinkList, setUpdatedLinkList, updatedLinkList } =
+    useLinkStore();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   //handler for closing dropdown when we click outside of the button
@@ -50,31 +55,33 @@ const LinkBox: FC<LinkBoxProps> = ({
 
   return (
     <div className="mt-5 bg-gray-100 rounded-xl p-5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center justify-start gap-1.5">
-          <FaGripLines className="text-gray-400 text-xs" />
-          <p className="text-sm font-semibold text-gray-500">
-            Link <strong>#{index + 1}</strong>
-          </p>
-        </div>
-        <div className="flex items-center gap-1 text-neutral-400">
-          {isSaved && (
+      {!changeView && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-start gap-1.5">
+            <FaGripLines className="text-gray-400 text-xs" />
+            <p className="text-sm font-semibold text-gray-500">
+              Link <strong>#{index + 1}</strong>
+            </p>
+          </div>
+          <div className="flex items-center gap-1 text-neutral-400">
+            {isSaved && (
+              <button
+                className="text-neutral-400 cursor-pointer text-sm hover:text-gray-500 transition-all duration-300"
+                onClick={handleEdit}
+              >
+                Edit
+              </button>
+            )}
+            {isSaved && <div className="h-4 w-[1.5px] bg-gray-400"></div>}
             <button
               className="text-neutral-400 cursor-pointer text-sm hover:text-gray-500 transition-all duration-300"
               onClick={handleRemove}
             >
-              Edit
+              Remove
             </button>
-          )}
-          {isSaved && <div className="h-4 w-[1.5px] bg-gray-400"></div>}
-          <button
-            className="text-neutral-400 cursor-pointer text-sm hover:text-gray-500 transition-all duration-300"
-            onClick={handleRemove}
-          >
-            Remove
-          </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Platform selection box */}
       <div className="w-full mx-auto mt-4 relative">
@@ -88,12 +95,27 @@ const LinkBox: FC<LinkBoxProps> = ({
         {/* Custom Select Input */}
         <button
           id="platform"
-          disabled={isSaved}
+          disabled={changeView ? false : isSaved}
           onClick={() => setDropdownOpen((prev) => !prev)}
           className={`flex items-center w-full px-4 py-3 text-sm border border-gray-200 rounded-md bg-white focus:outline-none justify-between #`}
         >
           {/* Display the selected platform's icon and name */}
-          {list?.platform_name ? (
+          {selectedPlatform ? (
+            <div className="flex items-center text-gray-700">
+              {platforms?.find(
+                (platform) => platform?.name === selectedPlatform
+              )?.icon && (
+                <span className="mr-2">
+                  {
+                    platforms?.find(
+                      (platform) => platform?.name === selectedPlatform
+                    )?.icon
+                  }
+                </span>
+              )}
+              <span>{selectedPlatform}</span>
+            </div>
+          ) : list?.platform_name ? (
             <div className="flex items-center text-gray-700">
               {platforms?.find(
                 (platform) => platform?.name === list?.platform_name
@@ -128,6 +150,13 @@ const LinkBox: FC<LinkBoxProps> = ({
                   onClick={() => {
                     setSelectedPlatform(platform.name);
                     setDropdownOpen(false);
+                    if (changeView) {
+                      setUpdatedLinkList({
+                        ...(updatedLinkList || null),
+                        platform_name: platform?.name,
+                      });
+                      return;
+                    }
                     setLinkList({
                       ...(linkList || null),
                       platform_name: platform?.name,
@@ -157,8 +186,17 @@ const LinkBox: FC<LinkBoxProps> = ({
             <LinkIcon size={16} />
           </div>
           <input
-            disabled={isSaved}
-            onChange={(e) => handleChange(e.target.value)}
+            disabled={changeView ? false : isSaved}
+            onChange={(e) => {
+              if (changeView) {
+                setUpdatedLinkList({
+                  ...(updatedLinkList || null),
+                  platform_url: e?.target?.value,
+                });
+              } else {
+                handleChange(e.target.value);
+              }
+            }}
             defaultValue={list?.platform_url ? list?.platform_url : ""}
             type="text"
             placeholder={`https://www.${
