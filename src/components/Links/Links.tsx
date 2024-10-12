@@ -225,21 +225,38 @@ function Links() {
   };
 
   const handleUpdateInDB = (id: string) => {
+    // Get platform name and URL either from the updatedLinkList or selectedLink (fallback)
+    const currentPlatformName = updatedLinkList?.platform_name || selectedLink?.platform_name;
+    const currentPlatformURL = updatedLinkList?.platform_url || selectedLink?.platform_url;
+  
+    if (!currentPlatformName) {
+      toast.error("Please select a platform.");
+      return;
+    }
+  
+    if (!currentPlatformURL) {
+      toast.error("Please provide a URL.");
+      return;
+    }
+  
+    // Validate URL against the selected platform
     const platformPattern = new RegExp(
-      `^https:\\/\\/(www\\.)?${
-        updatedLinkList?.platform_name
-          ? updatedLinkList?.platform_name
-          : selectedLink?.platform_name
-      }\\.com\\/[A-Za-z0-9_-]+`
+      `^https:\\/\\/(www\\.)?${currentPlatformName.toLowerCase()}\\.com\\/[A-Za-z0-9_-]+`
     );
-
+  
+    if (!platformPattern.test(currentPlatformURL)) {
+      toast.error(`Please enter a valid URL for ${currentPlatformName}.`);
+      return;
+    }
+  
+    // If platform or URL is changed and valid, trigger the mutation to update
     if (id && updatedLinkList) {
-      // if(updatedLinkList?.platform_name &&  )
       mutationForUpdate.mutate({ id, updatedLinkList });
     } else {
-      toast.error("You must make some changes");
+      toast.error("You must make some changes before updating.");
     }
   };
+  
 
   return (
     <div className="flex md:justify-center items-start gap-5 py-5">

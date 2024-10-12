@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MobileMockup from "../MobileMockup/MobileMockup";
 import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
 import { CiImageOn } from "react-icons/ci";
-import userImg from "~/assets/images/user.jpg";
 import { IUserInfo } from "~/interface/user.info";
 import { useUserStore } from "~/zustand/store/useUserStore";
+import { useMutation, useQueryClient } from "react-query";
+import { fetcher } from "~/zustand/api";
+import Spinner from "../ui/Spinner";
 
 const MAX_IMAGE_SIZE = 1024 * 1024; // 1MB
 const ALLOWED_FORMATS = {
@@ -16,11 +18,22 @@ const ALLOWED_FORMATS = {
 
 function ProfileDetails() {
   const [image, setImage] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(userImg);
+  const [imageUrl, setImageUrl] = useState<string | null>("");
   const [userDetails, setUserDetails] = useState<IUserInfo | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [isSaved, setIsSaved] = useState<boolean>(false);
-  const {authenticateUserDetails} = useUserStore()
+  const { authenticateUserDetails } = useUserStore();
+  const [initialUserDetails, setInitialUserDetails] =
+    useState<IUserInfo | null>(null);
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setUserDetails(authenticateUserDetails);
+    setInitialUserDetails(authenticateUserDetails);
+    if (authenticateUserDetails?.imageUrl) {
+      setImageUrl(authenticateUserDetails.imageUrl);
+    }
+  }, [authenticateUserDetails]);
 
   const handleDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -53,22 +66,55 @@ function ProfileDetails() {
     multiple: false,
   });
 
-  const validateInfo = () => {
-    if (!userDetails?.first_name) {
-      toast.error("First name is required");
-      return false;
-    }
-    if (!userDetails?.last_name) {
-      toast.error("Last name is required");
-      return false;
-    }
-    return true;
+  const hasChanges = () => {
+    const hasNameChanged =
+      initialUserDetails?.first_name !== userDetails?.first_name ||
+      initialUserDetails?.last_name !== userDetails?.last_name;
+    const hasImageChanged = imageUrl !== initialUserDetails?.imageUrl;
+
+    return hasNameChanged || hasImageChanged;
   };
 
-  const handleSave = () => {
-    if (validateInfo()) {
-      localStorage.setItem("uInfo", JSON.stringify(userDetails));
-      setIsSaved(true);
+  // Mutation for updating profile
+  const mutation = useMutation(
+    async (formData: FormData) => {
+      return fetcher("/update-profile", {
+        method: "POST",
+        body: formData,
+        credentials: "include", // Make sure cookies are included
+      });
+    },
+    {
+      onSuccess: (data) => {
+        toast.success("Profile updated successfully"); // Update Zustand state with the new user data
+        queryClient.invalidateQueries("userProfile");
+      },
+      onError: (error: Error) => {
+        toast.error("Failed to update profile");
+      },
+    }
+  );
+  const { isLoading } = mutation;
+
+  const handleSave = async () => {
+    if (!hasChanges()) {
+      toast.error("No changes detected.");
+      return;
+    }
+
+    if (userDetails?.first_name && userDetails?.last_name) {
+      const formData = new FormData();
+      formData.append("first_name", userDetails.first_name);
+      formData.append("last_name", userDetails.last_name);
+
+      // If a new image was uploaded, add it to the formData
+      if (image) {
+        formData.append("image", image);
+      }
+
+      mutation.mutate(formData); // Send the formData with the image and user details
+    } else {
+      toast.error("First name and last name are required.");
     }
   };
 
@@ -101,9 +147,9 @@ function ProfileDetails() {
               })}
             >
               <input {...getInputProps()} />
-              {imageUrl ? (
+              {imageUrl || authenticateUserDetails?.imageUrl ? (
                 <img
-                  src={imageUrl}
+                  src={imageUrl || authenticateUserDetails?.imageUrl}
                   alt="Profile"
                   className={`w-full h-full object-cover rounded-lg transition-all duration-300 ${
                     isHovered ? "brightness-50" : "brightness-100"
@@ -175,7 +221,7 @@ function ProfileDetails() {
                 }))
               }
               disabled
-              value={authenticateUserDetails?.email}
+              value={authenticateUserDetails?.email || ""}
               placeholder="youremail@email.com"
               className="w-full md:w-2/3 bg-white p-3 transition-all duration-300 text-sm border-[1.5px] hover:shadow-xl hover:shadow-violet-200 border-violet-500 focus:outline-none rounded-lg"
             />
@@ -188,7 +234,7 @@ function ProfileDetails() {
               "border border-violet-500 hover:text-violet-500 px-5 hover:bg-white  bg-violet-600 text-white transition duration-300 py-2 rounded-lg text-sm font-semibold mt-5"
             }
           >
-            Save
+            {isLoading ? <Spinner /> : "Save"}
           </button>
         </div>
       </div>

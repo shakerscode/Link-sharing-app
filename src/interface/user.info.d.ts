@@ -1,8 +1,8 @@
 export interface IUserInfo {
   first_name: string | null;
   last_name: string | null;
-  profile_url: string | null;
   email: string | null;
+  imageUrl?: string;
 }
 
 export interface IUserInfoWithoutProfileUrl
@@ -15,7 +15,7 @@ export interface UserState extends IUserInfo {
   setUserDetails: (details: Partial<UserState>) => void;
   authenticateUserDetails: IUserInfo | null;
   isAuthenticated: boolean;
-  setAuthenticatedUserDetails: (userDetails:  IUserInfo) => void;
+  setAuthenticatedUserDetails: (userDetails: IUserInfo) => void;
   setIsAuthenticated: (authStatus: Partial<boolean>) => void;
   logout: () => void;
 }

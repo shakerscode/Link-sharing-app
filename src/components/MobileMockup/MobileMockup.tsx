@@ -41,7 +41,9 @@ function MobileMockup({ showMockup = true }: { showMockup?: boolean }) {
             transform: "translateX(-50%)",
           }}
         >
-          <div className="w-32 h-32 rounded-full bg-gray-200"></div>
+          <div className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden">
+            <img src={uInfo?.imageUrl} alt="" />
+          </div>
           {uInfo?.first_name || uInfo?.last_name ? (
             <h6 className="text-2xl font-bold text-gray-700 mt-5">
               {uInfo?.first_name} {uInfo?.last_name}
