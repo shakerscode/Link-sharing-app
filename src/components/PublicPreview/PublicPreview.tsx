@@ -8,7 +8,7 @@ export const PublicPreview = () => {
   return (
     <div className="min-h-screen  w-full mx-auto relative bg-gray-200">
       <div className="h-[400px] rounded-b-3xl bg-indigo-600 flex items-center justify-center">
-        <div className="bg-white max-w-[1440px] w-full rounded-xl h-16 m-4 absolute top-0">
+        <div className="bg-white max-w-[1440px] w-[90%] md:w-full rounded-xl h-16 m-4 absolute top-0">
           <Header />
         </div>
       </div>

@@ -59,9 +59,13 @@ export default function Header() {
       {/* logo  */}
       <Link to={"/"}>
         <div className="flex items-center gap-1 cursor-pointer">
-          <div className="text-violet-600">
+          <div className="text-violet-600 hidden md:block">
             {/* imported svg logo from icon folder  */}
             <LinkLogo size={32} />
+          </div>
+          <div className="text-violet-600 block md:hidden">
+            {/* imported svg logo from icon folder  */}
+            <LinkLogo size={40} />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 hide-name">
             devlinks
@@ -92,7 +96,7 @@ export default function Header() {
         {isAuthenticated && <Link to={"/preview"}>
           <button
             className={
-              "border border-violet-500 text-violet-500 px-5 hover:bg-violet-500 hover:text-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
+              "border border-violet-500 text-violet-500 px-3 md:px-5 hover:bg-violet-500 hover:text-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
             }
           >
             <MdOutlineRemoveRedEye className="block md:hidden text-xl" />

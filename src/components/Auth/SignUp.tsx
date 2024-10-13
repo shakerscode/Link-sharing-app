@@ -94,7 +94,7 @@ function SignUp() {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="bg-white rounded-xl sm:px-6 px-4 py-8 max-w-md w-full h-max shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] max-lg:mx-auto">
+      <div className="bg-white rounded-xl sm:px-6 px-4 py-8 max-w-md w-[90%] md:w-full h-max shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] max-lg:mx-auto">
         <Link to={"/"}>
           <div className="flex items-center justify-center gap-2 py-2">
             <div className="text-violet-600">
