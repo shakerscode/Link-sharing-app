@@ -63,10 +63,12 @@ To install and run the project locally, follow these steps:
 
 - Developed by **Shaker Ahamed**.
 
-## Node
+## Note
 - You must clone the server public repo for opening it in locally. 
 
  ```bash
    SERVER_REPO = "https://github.com/shakerscode/devlinks-server" 
 
    ```
+
+## Please view the app in locally to get best service
