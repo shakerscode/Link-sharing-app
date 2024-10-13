@@ -1,9 +1,6 @@
-import mobileMoc from "~/assets/images/mobile-img.png";
 import { platforms } from "~/constants/platfrom";
 import { IoMdArrowForward } from "react-icons/io";
-import { Link, useParams } from "react-router-dom";
-import { useState } from "react";
-import { IUserInfo } from "~/interface/user.info";
+import { Link } from "react-router-dom";
 import { useLinkStore } from "~/zustand/store/useLinkStore";
 import { useUserStore } from "~/zustand/store/useUserStore";
 import { useQuery } from "react-query";
@@ -26,8 +23,7 @@ function MobileMockup({
     (_, i) => i + 1
   );
 
-  //api req
-
+  //Query for getting public users when userName is true
   const { data, error, isLoading } = useQuery(
     ["publicUser", userName], // Unique query key with userName as dependency
     async () => {
@@ -46,7 +42,7 @@ function MobileMockup({
         // Set user details in zustand state
         setAuthenticatedUserDetails(data?.user);
         // Set the user's link list in zustand state
-        setAllLinkLists(data?.links); // Assuming the API returns a linkList property
+        setAllLinkLists(data?.links);
       },
       onError: (error) => {
         console.error("Failed to fetch user data:", error);

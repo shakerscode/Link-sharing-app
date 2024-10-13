@@ -23,52 +23,53 @@ function Links() {
     setAllLinkLists,
     addLink,
     updatedLinkList,
-    setUpdatedLinkList, 
+    setUpdatedLinkList,
   } = useLinkStore();
-  const {authenticateUserDetails}= useUserStore()
+  const { authenticateUserDetails } = useUserStore();
   const [selectedLink, setSelectedLink] = useState<IUserPlatformList | null>(
     null
   );
   const [eventFrom, setEventFrom] = useState<string | null>(null);
-
   const queryClient = useQueryClient();
 
-  // Use React Query to fetch the links from the backend
-const { data, error, isLoading } = useQuery(
-  ["links", authenticateUserDetails?._id], // Include user ID in the query key
-  async () => {
-    if (!authenticateUserDetails?._id) {
-      return Promise.reject("No user ID provided.");
-    }
+  // Used React Query to fetch the links from the backend
+  const { data, error, isLoading } = useQuery(
+    ["links", authenticateUserDetails?._id],
+    async () => {
+      if (!authenticateUserDetails?._id) {
+        return Promise.reject("No user ID provided.");
+      }
 
-    return fetcher(`/links/${authenticateUserDetails._id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+      return fetcher(`/links/${authenticateUserDetails._id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+    },
+    {
+      enabled: !!authenticateUserDetails?._id, // Only run query if user ID exists
+      onSuccess: (data) => {
+        setAllLinkLists(data);
       },
-      credentials: "include", // Ensure cookies are sent with the request
-    });
-  },
-  {
-    enabled: !!authenticateUserDetails?._id, // Only run query if user ID exists
-    onSuccess: (data) => {
-      setAllLinkLists(data);
-    },
-    onError: (error) => {
-      console.error("Error fetching links:", error); // Handle error
-    },
-  }
-);
+      onError: (error) => {
+        console.error("Error fetching links:", error);
+      },
+    }
+  );
 
-
+  // If we got error while data querying
   if (error) {
     toast.error((error as Error).message);
   }
 
+  //Modal opening handler
   const openModal = () => {
     setIsModalOpen(true);
   };
 
+  //Modal closing handler
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -129,7 +130,7 @@ const { data, error, isLoading } = useQuery(
         // Update Zustand state and refetch data upon successful mutation
         addLink(newLink); // Update Zustand store with the new link
         queryClient.invalidateQueries("links"); // Invalidate and refetch 'links' query
-        toast.success("Link saved successfully!"); // Show success notification
+        toast.success("Link saved successfully!");
       },
       onError: (error: Error) => {
         toast.error(error.message || "Failed to save link");
@@ -147,20 +148,18 @@ const { data, error, isLoading } = useQuery(
       }),
     {
       onSuccess: () => {
-        // Show success notification
         toast.success("Link deleted successfully");
         closeModal();
         // Invalidate and refetch the "links" query to ensure UI updates with the new data
         queryClient.invalidateQueries("links");
       },
       onError: (error: Error) => {
-        // Handle error
         toast.error(error.message || "Failed to delete the link");
       },
     }
   );
 
-  
+  //Mutation for updating a link
   const mutationForUpdate = useMutation(
     async ({
       id,
@@ -178,12 +177,11 @@ const { data, error, isLoading } = useQuery(
     },
     {
       onSuccess: () => {
-        // Show success notification
         toast.success("Link updated successfully");
         // Invalidate and refetch the "links" query to ensure UI updates with the new data
         queryClient.invalidateQueries("links");
         setUpdatedLinkList(null);
-        closeModal(); // Assuming this function is available in your context to close any modals
+        closeModal();
       },
       onError: (error: Error) => {
         // Handle error
@@ -200,10 +198,13 @@ const { data, error, isLoading } = useQuery(
       setLinkList(null);
     }
   };
+
+  //loader from mutation
   const { isLoading: isSaving } = mutation;
   const { isLoading: isDeleteing } = mutationForDelete;
   const { isLoading: isUpdating } = mutationForUpdate;
 
+  //OnChange handler
   const handleChange = (e: string) => {
     setLinkList({
       ...(linkList || null),
@@ -223,21 +224,23 @@ const { data, error, isLoading } = useQuery(
     }
   };
 
+  //Opening modal for edit and setting the list details in a state
   const handleEdit = (list: IUserPlatformList) => {
     setSelectedLink(list);
     setEventFrom("edit");
     openModal();
   };
 
+  //Handle delete in DB
   const handleDeleteLinkFromDB = (id: string) => {
     if (id) {
       mutationForDelete.mutate(id);
     }
   };
 
+  //Handle update in DB
   const handleUpdateInDB = (id: string) => {
-    // Get platform name and URL either from the updatedLinkList or selectedLink (fallback)
-    const currentPlatformName =
+     const currentPlatformName =
       updatedLinkList?.platform_name || selectedLink?.platform_name;
     const currentPlatformURL =
       updatedLinkList?.platform_url || selectedLink?.platform_url;

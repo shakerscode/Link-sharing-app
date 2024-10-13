@@ -6,6 +6,7 @@ import { LinkLogo } from "~/assets/icons/LinkLogo";
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useAuth();
 
+  // A default view if we get isAuthenticated as null
   if (isAuthenticated === null) {
     return (
       <div className="bg-gray-300 mt-5 rounded-3xl h-screen flex items-center justify-center w-full flex-col">
@@ -17,8 +18,8 @@ const ProtectedRoute = ({ children }) => {
         </div>
       </div>
     );
-  } 
-  
+  }
+
   // If the user is not authenticated, redirect to the sign-in page
   if (!isAuthenticated) {
     return <Navigate to="/sign-in" replace />;

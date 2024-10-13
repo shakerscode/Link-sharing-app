@@ -1,24 +1,11 @@
 // api.ts
-
 import Cookies from "js-cookie";
 
 // Define your base API URL (this could be based on an environment variable)
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
 
 // Helper function to get the base URL
-export const getBaseUrl = () => BASE_URL;
-
-// Function to create a full API request with a path
-// export const fetcher = async (path: string, options: RequestInit = {}) => {
-//   const url = `${getBaseUrl()}${path}`;
-//   const response = await fetch(url, options);
-
-//   if (!response.ok) {
-//     throw new Error(`Failed to fetch: ${response.statusText}`);
-//   }
-
-//   return response.json(); // Assuming your response is in JSON format
-// };
+export const getBaseUrl = () => BASE_URL; 
 
 export const fetcher = async (path: string, options: RequestInit = {}) => {
   const url = `${getBaseUrl()}${path}`;
@@ -36,7 +23,7 @@ export const fetcher = async (path: string, options: RequestInit = {}) => {
   const updatedOptions = {
     ...options,
     headers,
-    credentials: "include",
+    credentials: "include", // This is most important part in this app for authenticating token by default without sending the token from frontend
   };
 
   const response = await fetch(url, updatedOptions as RequestInit);
@@ -45,5 +32,5 @@ export const fetcher = async (path: string, options: RequestInit = {}) => {
     throw new Error(`Failed to fetch: ${response.statusText}`);
   }
 
-  return response.json(); // Assuming your response is in JSON format
+  return response.json(); 
 };

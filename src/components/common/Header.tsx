@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import { HiLogin, HiOutlineLogout } from "react-icons/hi";
 import { IoMdPersonAdd } from "react-icons/io";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LinkLogo } from "~/assets/icons/LinkLogo";
 import { navLinks } from "~/constants/navLinks";
@@ -27,7 +27,7 @@ export default function Header() {
       fetcher("/logout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // Include credentials to send cookies
+        credentials: "include",
       }),
     {
       onSuccess: () => {
@@ -39,7 +39,7 @@ export default function Header() {
         toast.success("Logout successfully!");
 
         // Redirect to home or login page
-        navigate("/sign-in"); // Assuming you're using react-router
+        navigate("/sign-in");
       },
       onError: (error: Error) => {
         toast.error(error.message || "Failed to log out");
@@ -52,6 +52,7 @@ export default function Header() {
     mutation?.mutate();
   };
 
+  //Loader form mutation
   const { isLoading } = mutation;
 
   return (
@@ -93,17 +94,19 @@ export default function Header() {
 
       {/* action btn  */}
       <div className="flex gap-2">
-        {isAuthenticated && <Link to={"/preview"}>
-          <button
-            className={
-              "border border-violet-500 text-violet-500 px-3 md:px-5 hover:bg-violet-500 hover:text-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
-            }
-          >
-            <MdOutlineRemoveRedEye className="block md:hidden text-xl" />
+        {isAuthenticated && (
+          <Link to={"/preview"}>
+            <button
+              className={
+                "border border-violet-500 text-violet-500 px-3 md:px-5 hover:bg-violet-500 hover:text-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
+              }
+            >
+              <MdOutlineRemoveRedEye className="block md:hidden text-xl" />
 
-            <p className="hide-name">Preview</p>
-          </button>
-        </Link>}
+              <p className="hide-name">Preview</p>
+            </button>
+          </Link>
+        )}
         {isAuthenticated ? (
           <button
             onClick={handleLogout}

@@ -7,7 +7,6 @@ import { IUserInfo } from "~/interface/user.info";
 import { useUserStore } from "~/zustand/store/useUserStore";
 import { useMutation, useQueryClient } from "react-query";
 import { fetcher } from "~/zustand/api";
-import Spinner from "../ui/Spinner";
 import PrimaryButton from "../ui/PrimaryBtn";
 
 const MAX_IMAGE_SIZE = 1024 * 1024; // 1MB
@@ -25,9 +24,9 @@ function ProfileDetails() {
   const { authenticateUserDetails } = useUserStore();
   const [initialUserDetails, setInitialUserDetails] =
     useState<IUserInfo | null>(null);
-
   const queryClient = useQueryClient();
 
+  //Set authenticate user data in Zustand state in first load
   useEffect(() => {
     setUserDetails(authenticateUserDetails);
     setInitialUserDetails(authenticateUserDetails);
@@ -36,6 +35,7 @@ function ProfileDetails() {
     }
   }, [authenticateUserDetails]);
 
+  // Handler for Drag and drop
   const handleDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
@@ -67,6 +67,7 @@ function ProfileDetails() {
     multiple: false,
   });
 
+  //We check if there is any changes made by the user or not. Base on this, we perform updating user info here
   const hasChanges = () => {
     const hasNameChanged =
       initialUserDetails?.first_name !== userDetails?.first_name ||
@@ -82,12 +83,12 @@ function ProfileDetails() {
       return fetcher("/update-profile", {
         method: "POST",
         body: formData,
-        credentials: "include", // Make sure cookies are included
+        credentials: "include",
       });
     },
     {
       onSuccess: (data) => {
-        toast.success("Profile updated successfully"); // Update Zustand state with the new user data
+        toast.success("Profile updated successfully");
         queryClient.invalidateQueries("userProfile");
       },
       onError: (error: Error) => {
@@ -95,6 +96,8 @@ function ProfileDetails() {
       },
     }
   );
+
+  //Loader form mutation
   const { isLoading } = mutation;
 
   const handleSave = async () => {
@@ -133,6 +136,7 @@ function ProfileDetails() {
           </p>
         </div>
 
+        {/* Image uploading section  */}
         <div className="mt-8 bg-gray-100 rounded-xl p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <p className="w-1/3 text-gray-400 text-sm font-medium mb-1">
             Profile picture
@@ -175,6 +179,7 @@ function ProfileDetails() {
           </div>
         </div>
 
+        {/* Form section  */}
         <div className="mt-8 bg-gray-100 rounded-xl p-5 flex flex-col gap-4">
           <div className="flex flex-col items-start lg:flex-row lg:items-center">
             <p className="w-1/3 text-gray-400 text-sm font-medium mb-1">
@@ -228,8 +233,16 @@ function ProfileDetails() {
             />
           </div>
         </div>
+
+        {/* Profile footer  */}
         <div className="border-t border-gray-200 w-full mt-5 lg:mt-28 flex justify-end items-center">
-          <PrimaryButton onClick={handleSave} isLoading={isLoading} className="mt-5">Save</PrimaryButton>
+          <PrimaryButton
+            onClick={handleSave}
+            isLoading={isLoading}
+            className="mt-5"
+          >
+            Save
+          </PrimaryButton>
         </div>
       </div>
     </div>

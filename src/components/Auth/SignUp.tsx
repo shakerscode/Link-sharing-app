@@ -13,7 +13,7 @@ import { IUserInfoWithoutProfileUrl } from "~/interface/user.info";
 import { fetcher } from "~/zustand/api";
 import { useUserStore } from "~/zustand/store/useUserStore";
 import Spinner from "../ui/Spinner";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
 
 function SignUp() {
   const { setUserDetails, first_name, last_name, email, password } =
@@ -23,31 +23,33 @@ function SignUp() {
   const [eyeOpenConf, setEyeOpenConf] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Improved form validation with return statements
+  // Form validation with return statements
+
   const formValidation = () => {
     if (!first_name || !last_name || !email || !password || !confirmPassword) {
       toast.error("All fields are required.");
-      return false; // Return false if validation fails
+      return false;
     }
 
     if (!/^\S+@\S+\.\S+$/.test(email)) {
       toast.error("Please enter a valid email address.");
-      return false; // Return false if validation fails
+      return false;
     }
 
     if (password.length < 8) {
       // Change to < 8 instead of <= 8
       toast.error("Password must be at least 8 characters long.");
-      return false; // Return false if validation fails
+      return false;
     }
 
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
-      return false; // Return false if validation fails
+      return false;
     }
-    return true; // Return true if all validations pass
+    return true;
   };
 
+  //React query mutation for signing up. useMutation works for POST req.
   const mutation = useMutation(
     async (userData: IUserInfoWithoutProfileUrl) =>
       fetcher("/register", {
@@ -59,7 +61,7 @@ function SignUp() {
     {
       onSuccess: (data) => {
         // Update Zustand state and refetch data upon successful mutation
-        toast.success("Registration successful!"); // Show success notification
+        toast.success("Registration successful!");
         Cookies.set("frontendToken", data?.token, {
           secure: true,
           sameSite: "Lax",
@@ -73,10 +75,10 @@ function SignUp() {
         setConfirmPassword("");
         navigate("/");
       },
-      
+
       onError: (error: Error) => {
         console.log(error?.message);
-        
+
         toast.error(error.message || "Failed to register");
       },
     }
@@ -95,6 +97,8 @@ function SignUp() {
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="bg-white rounded-xl sm:px-6 px-4 py-8 max-w-md w-[90%] md:w-full h-max shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] max-lg:mx-auto">
+      
+        {/* Header for sign up  */}
         <Link to={"/"}>
           <div className="flex items-center justify-center gap-2 py-2">
             <div className="text-violet-600">
@@ -104,6 +108,8 @@ function SignUp() {
           </div>
         </Link>
         <div className="h-[1.5px] w-full bg-gray-200"></div>
+
+         {/* Form for sign up  */}
         <form onSubmit={handleSubmit}>
           <div className="sm:flex items-center justify-center sm:items-start space-x-4 max-sm:space-y-4 my-8">
             <button
