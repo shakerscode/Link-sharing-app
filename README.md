@@ -27,7 +27,7 @@ To install and run the project locally, follow these steps:
    ```
 
 3. **Set up environment variables**:
-   Create a `.env` file in the root of the project and configure the required environment variables (e.g., database credentials, JWT secrets). Here is an example:
+   Create a `.env` and `.env.production` file in the root of the project and configure the required environment variables (e.g., database credentials, JWT secrets). Here is an example:
 
    ```bash
    VITE_API_URL="http://localhost:5001/api"
