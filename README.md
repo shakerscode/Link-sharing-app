@@ -1,50 +1,64 @@
-# React + TypeScript + Vite
+# Project Name: DevLinks
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+DevLinks is a platform where users can register, sign in, and manage personal links to various platforms. Users can create, update, and share their profiles, displaying their social and professional links through a customizable interface.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To install and run the project locally, follow these steps:
 
-## Expanding the ESLint configuration
+1. **Clone the repository**:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+   ```bash
+   git clone https://github.com/shakerscode/Link-sharing-app.git
+   cd Link-sharing-app
+   ```
 
-- Configure the top-level `parserOptions` property like this:
+2. **Install dependencies using pnpm**:
+   Ensure that you have [pnpm](https://pnpm.io/installation) installed. If not, install it globally:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+   ```bash
+   npm install -g pnpm
+   ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+   After that, run:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+   ```bash
+   pnpm install
+   ```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+3. **Set up environment variables**:
+   Create a `.env` file in the root of the project and configure the required environment variables (e.g., database credentials, JWT secrets). Here is an example:
+
+   ```bash
+   VITE_API_URL="http://localhost:5001/api"
+   VITE_API_URL="https://devlinks-server-euwp.onrender.com/api"
+   ```
+
+4. **Run the application**:
+
+   ```bash
+   pnpm run dev
+   ```
+
+5. **Visit the application**:
+   Open your browser and go to `http://localhost:5173`.
+
+## Technologies Used
+
+- **React** - For building the user interface.
+- **React Router** - For handling routing within the app.
+- **TailwindCSS** - For designing the layout and styling.
+- **TypeScript** - For type-safe code across the project.
+- **Zustand** - For state management.
+- **React Query** - For managing server-side data and caching.
+- **Express.js** - Backend server to handle requests and routes.
+- **MongoDB** - NoSQL database for storing user data and links.
+- **Cloudinary** - For uploading and managing user images.
+- **Multer** - For handling file uploads on the server.
+- **jsonwebtoken (JWT)** - For user authentication and session management.
+- **bcryptjs** - For password encryption and validation.
+- **pnpm** - Package manager used for managing dependencies.
+
+## Credits
+
+- Developed by **Shaker Ahamed**.
