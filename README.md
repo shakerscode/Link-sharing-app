@@ -43,7 +43,7 @@ To install and run the project locally, follow these steps:
 5. **Visit the application**:
    Open your browser and go to `http://localhost:5173`.
 
-## Technologies Used
+## Technologies Used Full App
 
 - **React** - For building the user interface.
 - **React Router** - For handling routing within the app.
@@ -62,3 +62,11 @@ To install and run the project locally, follow these steps:
 ## Credits
 
 - Developed by **Shaker Ahamed**.
+
+## Node
+- You must clone the server public repo for opening it in locally. 
+
+ ```bash
+   SERVER_REPO = "https://github.com/shakerscode/devlinks-server" 
+
+   ```
