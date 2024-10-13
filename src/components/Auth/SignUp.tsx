@@ -13,6 +13,7 @@ import { IUserInfoWithoutProfileUrl } from "~/interface/user.info";
 import { fetcher } from "~/zustand/api";
 import { useUserStore } from "~/zustand/store/useUserStore";
 import Spinner from "../ui/Spinner";
+import Cookies from "js-cookie"
 
 function SignUp() {
   const { setUserDetails, first_name, last_name, email, password } =
@@ -56,9 +57,13 @@ function SignUp() {
         credentials: "include",
       }),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         // Update Zustand state and refetch data upon successful mutation
         toast.success("Registration successful!"); // Show success notification
+        Cookies.set("frontendToken", data?.token, {
+          secure: true,
+          sameSite: "Lax",
+        });
         setUserDetails({
           first_name: "",
           last_name: "",

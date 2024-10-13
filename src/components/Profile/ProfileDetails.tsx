@@ -8,6 +8,7 @@ import { useUserStore } from "~/zustand/store/useUserStore";
 import { useMutation, useQueryClient } from "react-query";
 import { fetcher } from "~/zustand/api";
 import Spinner from "../ui/Spinner";
+import PrimaryButton from "../ui/PrimaryBtn";
 
 const MAX_IMAGE_SIZE = 1024 * 1024; // 1MB
 const ALLOWED_FORMATS = {
@@ -228,14 +229,7 @@ function ProfileDetails() {
           </div>
         </div>
         <div className="border-t border-gray-200 w-full mt-5 lg:mt-28 flex justify-end items-center">
-          <button
-            onClick={handleSave}
-            className={
-              "border border-violet-500 hover:text-violet-500 px-5 hover:bg-white  bg-violet-600 text-white transition duration-300 py-2 rounded-lg text-sm font-semibold mt-5"
-            }
-          >
-            {isLoading ? <Spinner /> : "Save"}
-          </button>
+          <PrimaryButton onClick={handleSave} isLoading={isLoading} className="mt-5">Save</PrimaryButton>
         </div>
       </div>
     </div>

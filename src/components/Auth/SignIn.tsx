@@ -11,6 +11,7 @@ import User from "~/assets/icons/User";
 import { fetcher } from "~/zustand/api";
 import Spinner from "../ui/Spinner";
 import { GoEyeClosed } from "react-icons/go";
+import Cookies from "js-cookie";
 
 function SignIn() {
   const [email, setEmail] = useState("");
@@ -29,9 +30,12 @@ function SignIn() {
         credentials: "include",
       }),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         toast.success("Sign in successful!");
-
+        Cookies.set("frontendToken", data?.token, {
+          secure: true,
+          sameSite: "Lax",
+        });
         setPassword("");
         setEmail("");
         navigate(from, { replace: true });

@@ -3,6 +3,8 @@ export interface IUserInfo {
   last_name: string | null;
   email: string | null;
   imageUrl?: string;
+  _id?: string;
+  user_name?: string;
 }
 
 export interface IUserInfoWithoutProfileUrl

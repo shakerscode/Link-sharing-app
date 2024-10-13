@@ -1,8 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import MobileMockup from "../MobileMockup/MobileMockup";
+import { useUserStore } from "~/zustand/store/useUserStore";
+import toast from "react-hot-toast";
 
 function Preview() {
+  const { authenticateUserDetails } = useUserStore();
+
+  const handleCopyLink = () => {
+    const linkToCopy = `${window.location.origin}/${authenticateUserDetails?.user_name}`;
+
+    // Copy the link to clipboard
+    navigator.clipboard
+      .writeText(linkToCopy)
+      .then(() => {
+        toast.success("Link copied to clipboard!");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy link.");
+        console.error("Error copying link: ", err);
+      });
+  };
+
   return (
     <div className="min-h-screen  w-full mx-auto relative bg-gray-200">
       <div className="h-[400px] rounded-b-3xl bg-indigo-600 flex items-center justify-center">
@@ -16,13 +35,18 @@ function Preview() {
               Back to Editor
             </button>
           </Link>
-          <button
-            className={
-              "border border-indigo-500 hover:text-indigo-500 hover:bg-white px-5 bg-indigo-500 text-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
-            }
+          <Link
+            to={`/${authenticateUserDetails?.user_name}`}
+            onClick={handleCopyLink}
           >
-            Share link
-          </button>
+            <button
+              className={
+                "border border-indigo-500 hover:text-indigo-500 hover:bg-white px-5 bg-indigo-500 text-white transition duration-300 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5"
+              }
+            >
+              Share link
+            </button>
+          </Link>
         </div>
       </div>
       <div

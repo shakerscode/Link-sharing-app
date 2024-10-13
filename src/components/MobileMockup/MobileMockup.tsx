@@ -1,20 +1,57 @@
 import mobileMoc from "~/assets/images/mobile-img.png";
 import { platforms } from "~/constants/platfrom";
 import { IoMdArrowForward } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import { IUserInfo } from "~/interface/user.info";
 import { useLinkStore } from "~/zustand/store/useLinkStore";
 import { useUserStore } from "~/zustand/store/useUserStore";
+import { useQuery } from "react-query";
+import { fetcher } from "~/zustand/api";
 
-function MobileMockup({ showMockup = true }: { showMockup?: boolean }) {
-  const { allLinkLists } = useLinkStore();
-  const { authenticateUserDetails: uInfo } = useUserStore();
+function MobileMockup({
+  showMockup = true,
+  userName = null,
+}: {
+  showMockup?: boolean;
+  userName?: string | null;
+}) {
+  const { allLinkLists, setAllLinkLists } = useLinkStore();
+  const { authenticateUserDetails: uInfo, setAuthenticatedUserDetails } =
+    useUserStore();
 
   const arr = [1, 2, 3, 4];
   const array = Array.from(
     { length: arr?.length - allLinkLists?.length },
     (_, i) => i + 1
+  );
+
+  //api req
+
+  const { data, error, isLoading } = useQuery(
+    ["publicUser", userName], // Unique query key with userName as dependency
+    async () => {
+      if (userName) {
+        return await fetcher(`/public-profile/${userName}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
+    },
+    {
+      enabled: !!userName, // Only run the query if userName is not null
+      onSuccess: (data) => {
+        // Set user details in zustand state
+        setAuthenticatedUserDetails(data?.user);
+        // Set the user's link list in zustand state
+        setAllLinkLists(data?.links); // Assuming the API returns a linkList property
+      },
+      onError: (error) => {
+        console.error("Failed to fetch user data:", error);
+      },
+    }
   );
 
   return (

@@ -3,6 +3,7 @@ import { fetcher } from "~/zustand/api";
 import { useQuery } from "react-query";
 import { LinkLogo } from "~/assets/icons/LinkLogo";
 import Spinner from "~/components/ui/Spinner";
+import Cookies from "js-cookie";
 
 export const useAuth = () => {
   const { setAuthenticatedUserDetails, isAuthenticated, setIsAuthenticated } =
@@ -11,14 +12,16 @@ export const useAuth = () => {
   // Use React Query to fetch the user profile from the backend
   const { data, error, isLoading } = useQuery(
     "userProfile",
-    async () =>
-      fetcher("/user/profile", {
+    async () => {
+      // Get the frontend token from cookies
+      return fetcher("/user/profile", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-      }),
+      });
+    },
     {
       onSuccess: (data) => {
         setAuthenticatedUserDetails(data);
@@ -29,7 +32,6 @@ export const useAuth = () => {
       },
     }
   );
-
   // If the query is still loading, return false for `isAuthenticated` to prevent premature access
   if (isLoading) {
     return (

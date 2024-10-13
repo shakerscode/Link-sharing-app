@@ -5,7 +5,8 @@ import SignUp from "~/components/Auth/SignUp";
 import Home from "~/components/Home/Home";
 import Links from "~/components/Links/Links";
 import Preview from "~/components/Preview/Preview";
-import ProfileDetails from "~/components/Profile/ProfileDetails";
+import ProfileDetails from "~/components/Profile/ProfileDetails"; 
+import { PublicPreview } from "~/components/PublicPreview/PublicPreview";
 import ProtectedRoute from "~/components/common/ProtectedRoute";
 import MainLayout from "~/layout/MainLayout";
 
@@ -24,13 +25,7 @@ export const routes = createBrowserRouter([
           <ProtectedRoute>
             <Links />
           </ProtectedRoute>
-        ),
-        // children: [
-        //   {
-        //     path: "/links",
-        //     element: <Links />,
-        //   },
-        // ],
+        ), 
       },
       {
         path: "/profile",
@@ -38,13 +33,8 @@ export const routes = createBrowserRouter([
           <ProtectedRoute>
             <ProfileDetails />
           </ProtectedRoute>
-        ), // Wrap with ProtectedRoute
-        // children: [
-        //   {
-        //     path: "/profile",
-        //     element: <ProfileDetails />,
-        //   },
-        // ],
+        ),  
+        
       },
     ],
   },
@@ -54,13 +44,11 @@ export const routes = createBrowserRouter([
       <ProtectedRoute>
         <Preview />
       </ProtectedRoute>
-    ), // Wrap with ProtectedRoute
-    // children: [
-    //   {
-    //     path: "/preview",
-    //     element: <Preview />,
-    //   },
-    // ],
+    ),  
+  },
+  {
+    path:"/:userName",
+    element:<PublicPreview/>
   },
   {
     path: "/sign-in",

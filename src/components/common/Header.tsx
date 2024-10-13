@@ -12,13 +12,14 @@ import { fetcher } from "~/zustand/api";
 import { useLinkStore } from "~/zustand/store/useLinkStore";
 import { useUserStore } from "~/zustand/store/useUserStore";
 import Spinner from "../ui/Spinner";
+import Cookies from "js-cookie";
 
 export default function Header() {
   const location = useLocation();
   const isAuthenticated = useAuth();
   const { setIsAuthenticated, setAuthenticatedUserDetails } = useUserStore();
   const navigate = useNavigate();
-  const{setAllLinkLists}=useLinkStore()
+  const { setAllLinkLists } = useLinkStore();
 
   // Mutation for saving a new link
   const mutation = useMutation(
@@ -33,7 +34,8 @@ export default function Header() {
         // Clear user session (you may use Zustand or Context API)
         setAuthenticatedUserDetails(null);
         setIsAuthenticated(null);
-        setAllLinkLists([])
+        setAllLinkLists([]);
+        Cookies.remove("frontendToken");
         toast.success("Logout successfully!");
 
         // Redirect to home or login page
@@ -50,7 +52,7 @@ export default function Header() {
     mutation?.mutate();
   };
 
-  const { isLoading } = mutation; 
+  const { isLoading } = mutation;
 
   return (
     <div className="bg-white rounded-2xl h-16 p-4 flex justify-between items-center">
@@ -109,11 +111,7 @@ export default function Header() {
               <HiOutlineLogout className="block md:hidden text-xl" />
             )}
 
-            {isLoading ? (
-              <Spinner/>
-            ) : (
-              <p className="hide-name">Log out</p>
-            )}
+            {isLoading ? <Spinner /> : <p className="hide-name">Log out</p>}
           </button>
         ) : (
           <>

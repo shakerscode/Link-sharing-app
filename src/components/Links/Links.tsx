@@ -11,6 +11,7 @@ import { fetcher } from "~/zustand/api";
 import Spinner from "../ui/Spinner";
 import { IoMdClose } from "react-icons/io";
 import PrimaryButton from "../ui/PrimaryBtn";
+import { useUserStore } from "~/zustand/store/useUserStore";
 
 function Links() {
   const [isUnsaved, setIsUnsaved] = useState<boolean>(false);
@@ -22,8 +23,9 @@ function Links() {
     setAllLinkLists,
     addLink,
     updatedLinkList,
-    setUpdatedLinkList
+    setUpdatedLinkList, 
   } = useLinkStore();
+  const {authenticateUserDetails}= useUserStore()
   const [selectedLink, setSelectedLink] = useState<IUserPlatformList | null>(
     null
   );
@@ -32,24 +34,32 @@ function Links() {
   const queryClient = useQueryClient();
 
   // Use React Query to fetch the links from the backend
-  const { data, error, isLoading } = useQuery(
-    "links",
-    async () =>
-      fetcher("/links", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      }),
-    {
-      onSuccess: (data) => {
-        setAllLinkLists(data);
-      },
+const { data, error, isLoading } = useQuery(
+  ["links", authenticateUserDetails?._id], // Include user ID in the query key
+  async () => {
+    if (!authenticateUserDetails?._id) {
+      return Promise.reject("No user ID provided.");
     }
-  );
- 
-  
+
+    return fetcher(`/links/${authenticateUserDetails._id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Ensure cookies are sent with the request
+    });
+  },
+  {
+    enabled: !!authenticateUserDetails?._id, // Only run query if user ID exists
+    onSuccess: (data) => {
+      setAllLinkLists(data);
+    },
+    onError: (error) => {
+      console.error("Error fetching links:", error); // Handle error
+    },
+  }
+);
+
 
   if (error) {
     toast.error((error as Error).message);
@@ -150,6 +160,7 @@ function Links() {
     }
   );
 
+  
   const mutationForUpdate = useMutation(
     async ({
       id,
@@ -171,7 +182,7 @@ function Links() {
         toast.success("Link updated successfully");
         // Invalidate and refetch the "links" query to ensure UI updates with the new data
         queryClient.invalidateQueries("links");
-        setUpdatedLinkList(null)
+        setUpdatedLinkList(null);
         closeModal(); // Assuming this function is available in your context to close any modals
       },
       onError: (error: Error) => {
@@ -226,29 +237,31 @@ function Links() {
 
   const handleUpdateInDB = (id: string) => {
     // Get platform name and URL either from the updatedLinkList or selectedLink (fallback)
-    const currentPlatformName = updatedLinkList?.platform_name || selectedLink?.platform_name;
-    const currentPlatformURL = updatedLinkList?.platform_url || selectedLink?.platform_url;
-  
+    const currentPlatformName =
+      updatedLinkList?.platform_name || selectedLink?.platform_name;
+    const currentPlatformURL =
+      updatedLinkList?.platform_url || selectedLink?.platform_url;
+
     if (!currentPlatformName) {
       toast.error("Please select a platform.");
       return;
     }
-  
+
     if (!currentPlatformURL) {
       toast.error("Please provide a URL.");
       return;
     }
-  
+
     // Validate URL against the selected platform
     const platformPattern = new RegExp(
       `^https:\\/\\/(www\\.)?${currentPlatformName.toLowerCase()}\\.com\\/[A-Za-z0-9_-]+`
     );
-  
+
     if (!platformPattern.test(currentPlatformURL)) {
       toast.error(`Please enter a valid URL for ${currentPlatformName}.`);
       return;
     }
-  
+
     // If platform or URL is changed and valid, trigger the mutation to update
     if (id && updatedLinkList) {
       mutationForUpdate.mutate({ id, updatedLinkList });
@@ -256,7 +269,6 @@ function Links() {
       toast.error("You must make some changes before updating.");
     }
   };
-  
 
   return (
     <div className="flex md:justify-center items-start gap-5 py-5">
