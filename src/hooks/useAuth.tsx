@@ -9,9 +9,11 @@ export const useAuth = () => {
   const { setAuthenticatedUserDetails, isAuthenticated, setIsAuthenticated } =
     useUserStore();
 
+  const frontendToken = Cookies?.get("frontendToken");
+
   // Use React Query to fetch the user profile from the backend
   const { data, error, isLoading } = useQuery(
-    "userProfile",
+    ["userProfile", frontendToken],
     async () => {
       // Get the frontend token from cookies
       return fetcher("/user/profile", {
@@ -30,8 +32,10 @@ export const useAuth = () => {
       onError: () => {
         setIsAuthenticated(false);
       },
+      enabled: !!frontendToken,
     }
   );
+
   // If the query is still loading, return false for `isAuthenticated` to prevent premature access
   if (isLoading) {
     return (
