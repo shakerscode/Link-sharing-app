@@ -78,23 +78,23 @@ function SignIn() {
 
           {/* Form for sign in  */}
         <form>
-          <div className="sm:flex items-center justify-center sm:items-start space-x-4 max-sm:space-y-4 my-8">
+        <div className="flex justify-center items-center gap-3 my-8">
             <button
               type="button"
-              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none"
+              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none w-full flex items-center justify-center"
             >
               <Google size={20} />
-              Sign in with Google
+              <p className="hidden lg:flex">Sign in with Google </p>
             </button>
             <button
               type="button"
-              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none"
+              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none w-full flex items-center justify-center"
             >
               <Facebook size={20} />
             </button>
             <button
               type="button"
-              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none"
+              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none w-full flex items-center justify-center"
             >
               <Apple size={20} />
             </button>

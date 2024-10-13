@@ -97,7 +97,6 @@ function SignUp() {
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="bg-white rounded-xl sm:px-6 px-4 py-8 max-w-md w-[90%] md:w-full h-max shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] max-lg:mx-auto">
-      
         {/* Header for sign up  */}
         <Link to={"/"}>
           <div className="flex items-center justify-center gap-2 py-2">
@@ -109,25 +108,25 @@ function SignUp() {
         </Link>
         <div className="h-[1.5px] w-full bg-gray-200"></div>
 
-         {/* Form for sign up  */}
+        {/* Form for sign up  */}
         <form onSubmit={handleSubmit}>
-          <div className="sm:flex items-center justify-center sm:items-start space-x-4 max-sm:space-y-4 my-8">
+          <div className="flex justify-center items-center gap-3 my-8">
             <button
               type="button"
-              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none"
+              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none w-full flex items-center justify-center"
             >
               <Google size={20} />
-              Sign in with Google
+              <p className="hidden lg:flex">Sign in with Google </p>
             </button>
             <button
               type="button"
-              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none"
+              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none w-full flex items-center justify-center"
             >
               <Facebook size={20} />
             </button>
             <button
               type="button"
-              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none"
+              className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none w-full flex items-center justify-center"
             >
               <Apple size={20} />
             </button>
