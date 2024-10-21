@@ -84,7 +84,7 @@ function SignIn() {
               className="py-2.5 px-4 text-sm font-semibold rounded-md text-violet-500 bg-violet-100 hover:bg-violet-200 focus:outline-none w-full flex items-center justify-center"
             >
               <Google size={20} />
-              <p className="hidden lg:flex">Sign in with Google </p>
+              {/* <p className="hidden lg:flex">Sign in with Google </p> */}
             </button>
             <button
               type="button"
